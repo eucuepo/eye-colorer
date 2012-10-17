@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Vector;
 
+
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -71,7 +72,7 @@ public class UploadImage extends HttpServlet {
 				// TODO: add support for several image formats
 				response.setContentType("image/png");
 
-				BufferedImage bi = ImageIO.read(file.getInputStream());
+				BufferedImage bi = ImageIO.read(file.getInputStream()); 
 				/* Sorry for this */
 				DrawPanel dp = new DrawPanel();
 				JIPImage jipImage = JIPToolkit.getColorImage(bi);

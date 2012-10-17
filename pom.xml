@@ -61,32 +61,7 @@
 		<!-- Jares independientes -->
 		<dependency>
 			<groupId>com.example</groupId>
-			<artifactId>bij</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.example</groupId>
-			<artifactId>ij</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.example</groupId>
-			<artifactId>ImageEditor</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.example</groupId>
 			<artifactId>javavis</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.example</groupId>
-			<artifactId>swt</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.example</groupId>
-			<artifactId>swt64</artifactId>
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
