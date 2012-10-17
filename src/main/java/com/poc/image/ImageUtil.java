@@ -56,7 +56,7 @@ public class ImageUtil {
 
 		// Set the eye color
 		// TODO: Add alpha parameter
-		Color paint = new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 128);
+		Color paint = new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 80);
 		g.setPaint(paint);
 
 		// paint the eye!
