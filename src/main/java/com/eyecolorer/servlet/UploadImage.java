@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +32,7 @@ import com.eyecolorer.image.Circulo;
 import com.eyecolorer.image.ImageUtil;
 import com.eyecolorer.image.functions.SmoothMedian;
 
+@MultipartConfig
 public class UploadImage extends HttpServlet {
 	/**
 	 * 
@@ -77,7 +79,7 @@ public class UploadImage extends HttpServlet {
 
 			BufferedImage bi = ImageIO.read(file);
 			/* Sorry for this */
-			DrawPanel dp = new DrawPanel();
+			//DrawPanel dp = new DrawPanel();
 			JIPImage jipImage = JIPToolkit.getColorImage(bi);
 
 			SmoothMedian smoothMedian = new SmoothMedian();
@@ -116,8 +118,8 @@ public class UploadImage extends HttpServlet {
 			// Graphics2D g2d = (Graphics2D) jLabel1.getGraphics();
 			// g2d.drawImage(iris.getImage(), 0, 0, null);
 			// repaint();
-			dp.setIris(vecAux.get(0));
-			dp.setPupila(vecAux.get(1));
+			//dp.setIris(vecAux.get(0));
+			//dp.setPupila(vecAux.get(1));
 			Circunferencia circunferenciaIris = (Circunferencia) listaCirculos.get(1);
 			Circunferencia circunferenciaPupila = (Circunferencia) listaCirculos.get(1);
 			for (int i = 0; i < vecAux.size(); i++) {
