@@ -3,7 +3,7 @@
  * Created on November 4, 2004, 1:23 PM
  */
 
-package org.cs02rm0.jirrm;
+package com.eyecolorer.gui;
 
 import java.awt.Color;
 import java.awt.FileDialog;

@@ -11,7 +11,7 @@
 	<display-name>Archetype Created Web Application</display-name>
 	<servlet>
 		<servlet-name>upload</servlet-name>
-		<servlet-class>com.poc.servlet.UploadImage</servlet-class>
+		<servlet-class>com.eyecolorer.servlet.UploadImage</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>upload</servlet-name>

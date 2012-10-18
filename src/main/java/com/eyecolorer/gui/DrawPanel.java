@@ -1,4 +1,4 @@
-package org.cs02rm0.jirrm;
+package com.eyecolorer.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;

@@ -1,4 +1,4 @@
-package com.poc.servlet;
+package com.eyecolorer.servlet;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -6,9 +6,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -23,7 +23,6 @@ import jipfunc.FBinarize;
 import jipfunc.FCanny;
 import jipfunc.FColorToGray;
 import jipfunc.FHoughCirc;
-import jipfunc.FSmoothMedian;
 import jiputil.Circunferencia;
 
 import org.apache.commons.fileupload.FileItem;
@@ -31,9 +30,11 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.cs02rm0.jirrm.DrawPanel;
 
-import com.poc.image.ImageUtil;
+import com.eyecolorer.gui.DrawPanel;
+import com.eyecolorer.image.Circulo;
+import com.eyecolorer.image.ImageUtil;
+import com.eyecolorer.image.functions.SmoothMedian;
 
 public class UploadImage extends HttpServlet {
 	/**
@@ -72,14 +73,14 @@ public class UploadImage extends HttpServlet {
 				// TODO: add support for several image formats
 				response.setContentType("image/png");
 
-				BufferedImage bi = ImageIO.read(file.getInputStream()); 
+				BufferedImage bi = ImageIO.read(file.getInputStream());
 				/* Sorry for this */
 				DrawPanel dp = new DrawPanel();
 				JIPImage jipImage = JIPToolkit.getColorImage(bi);
 
-				FSmoothMedian fsmoothMedian = new FSmoothMedian();
-				fsmoothMedian.setParamValue("radius", 3);
-				JIPImage imgFiltroMediania = fsmoothMedian.processImg(jipImage);
+				SmoothMedian smoothMedian = new SmoothMedian();
+				smoothMedian.setRadius(2);
+				JIPImage imgFiltroMediania = smoothMedian.processImg(jipImage);
 
 				FColorToGray fColorToGray = new FColorToGray();
 				JIPImage imageGray = fColorToGray.processImg(imgFiltroMediania);
@@ -95,6 +96,7 @@ public class UploadImage extends HttpServlet {
 				fBinarize.setParamValue("u2", 255);
 				JIPImage imgBinarize = fBinarize.processImg(imgCanny);
 
+				//TODO: Adjust the values with image dimensions
 				FHoughCirc fHougCir = new FHoughCirc();
 				fHougCir.setParamValue("thres", 30);
 				fHougCir.setParamValue("Rmin", 10);
@@ -103,26 +105,35 @@ public class UploadImage extends HttpServlet {
 
 				Image iris2 = JIPToolkit.getAWTImage(imgBinarize);
 
-				System.out.println("Numero de circulos: " + fHougCir.getResultValueInt("ncirc"));
-				Vector vecAux = (Vector) fHougCir.getResultValueObj("circum");
+				System.out.println("Numero de circulos antes de filtro: " + fHougCir.getResultValueInt("ncirc"));
+				Vector<Circunferencia> vecAux = (Vector<Circunferencia>) fHougCir.getResultValueObj("circum");
+				List<Circunferencia> listaCirculos = new ArrayList<Circunferencia>();
+				listaCirculos.addAll(vecAux);
+				listaCirculos = Circulo.getConcentricCircunferencia(listaCirculos);
+
 				// Graphics2D g2d = (Graphics2D) jLabel1.getGraphics();
 				// g2d.drawImage(iris.getImage(), 0, 0, null);
 				// repaint();
-				dp.setIris((Circunferencia) vecAux.get(0));
-				dp.setPupila((Circunferencia) vecAux.get(1));
-				Circunferencia circunferenciaIris = (Circunferencia) vecAux.get(0);
-				Circunferencia circunferenciaPupila = (Circunferencia) vecAux.get(1);
+				dp.setIris(vecAux.get(0));
+				dp.setPupila(vecAux.get(1));
+				Circunferencia circunferenciaIris = (Circunferencia) listaCirculos.get(1);
+				Circunferencia circunferenciaPupila = (Circunferencia) listaCirculos.get(1);
 				for (int i = 0; i < vecAux.size(); i++) {
 					Circunferencia c = (Circunferencia) vecAux.get(i);
-					System.out.println("circunferencia " + i + ": " + c.centroX + " : " + c.centroY + " : " + c.radio);
-					// Assume x, y, and diameter are instance variables.
-					Ellipse2D.Double circle = new Ellipse2D.Double(c.centroX, c.centroY, c.radio * 2, c.radio * 2);
+					System.out.println("circunferencia " + i + ": centro X: " + c.centroX + " centroY: " + c.centroY + " radio: " + c.radio);
+				}
+
+				System.out.println("Numero de circulos despues de filtro: " + listaCirculos.size());
+				int i = 0;
+				for (Circunferencia circunferencia : listaCirculos) {
+					i++;
+					System.out.println("circunferencia " + i + ": centro X: " + circunferencia.centroX + " centroY: " + circunferencia.centroY + " radio: " + circunferencia.radio);
 				}
 
 				/* end of crap */
 
 				// TODO: change to detected eye position
-				BufferedImage leftEye = ImageUtil.createEyeMask(bi.getWidth(), bi.getHeight(), circunferenciaIris.radio*2, circunferenciaPupila.radio*2, 138, 75, eyeColor);
+				BufferedImage leftEye = ImageUtil.createEyeMask(bi.getWidth(), bi.getHeight(), circunferenciaIris.radio * 2, circunferenciaPupila.radio * 2, 138, 75, eyeColor);
 				// BufferedImage leftEye =
 				// ImageUtil.createEyeMask(bi.getWidth(), bi.getHeight(), 20,
 				// 80, 50, 50, eyeColor);

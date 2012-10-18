@@ -1,8 +1,9 @@
-package com.poc.image;
+package com.eyecolorer.image;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Area;
@@ -56,6 +57,12 @@ public class ImageUtil {
 
 		// Set the eye color
 		// TODO: Add alpha parameter
+		// TODO: Fade borders with gradient paint
+		// Create and set a RadialGradient centered on the object,
+					// going from white at the center to black at the edges
+		// RadialGradientPaint paint = new RadialGradientPaint(center, radius,
+		// dist, colors);
+		// g2d.setPaint(paint);
 		Color paint = new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 80);
 		g.setPaint(paint);
 
