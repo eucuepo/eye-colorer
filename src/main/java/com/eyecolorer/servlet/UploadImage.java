@@ -63,7 +63,7 @@ public class UploadImage extends HttpServlet {
 			JIPImage jipImage = JIPToolkit.getColorImage(bi);
 
 			SmoothMedian smoothMedian = new SmoothMedian();
-			smoothMedian.setRadius(2);
+			smoothMedian.setRadius(3);
 			JIPImage imgFiltroMediania = smoothMedian.processImg(jipImage);
 
 			FColorToGray fColorToGray = new FColorToGray();
@@ -80,7 +80,7 @@ public class UploadImage extends HttpServlet {
 			
 			//TODO: Wrapper de binarize
 			FBinarize fBinarize = new FBinarize();
-			fBinarize.setParamValue("u1", 30);
+			fBinarize.setParamValue("u1", 25);
 			fBinarize.setParamValue("u2", 255);
 			JIPImage imgBinarize = fBinarize.processImg(imgCanny);
 
