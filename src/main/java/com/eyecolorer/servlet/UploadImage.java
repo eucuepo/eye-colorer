@@ -40,11 +40,8 @@ public class UploadImage extends HttpServlet {
 
 	@SuppressWarnings("unchecked")
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		System.out.println("request: " + request);
-		// if (!isMultipart) {
-		// System.out.println("File Not Uploaded");
-		// } else {
+
 		String color = request.getParameter("color"); // Retrieves <input
 														// type="text"
 														// name="description">
@@ -52,23 +49,7 @@ public class UploadImage extends HttpServlet {
 													// name="file">
 		InputStream file = filePart.getInputStream();
 
-		// FileItemFactory factory = new DiskFileItemFactory();
-		// ServletFileUpload upload = new ServletFileUpload(factory);
-		// List<FileItem> items = null;
-		// // try to get the form parameters, image and iris color
-		// try {
-		// items = (List<FileItem>) upload.parseRequest(request);
-		// System.out.println("items: " + items);
-		// if (items.size() < 1)
-		// throw new FileUploadException("File not found");
-		// } catch (FileUploadException e) {
-		// e.printStackTrace();
-		// }
-		// // get the file
-		// FileItem file = (FileItem) items.get(0);
-		// // get the color
-		// FileItem color = (FileItem) items.get(1);
-		// parse the color
+
 		Color eyeColor = new Color(Integer.parseInt(color, 16));
 
 		try {
@@ -88,12 +69,16 @@ public class UploadImage extends HttpServlet {
 			FColorToGray fColorToGray = new FColorToGray();
 			JIPImage imageGray = fColorToGray.processImg(imgFiltroMediania);
 
+			//TODO: Wrapper de canny
 			FCanny fCanny = new FCanny();
+			fCanny.setParamValue("sigma",1.0f);
+			fCanny.setParamValue("brightness",100);
 			JIPImage imgCanny = fCanny.processImg(imageGray);
 
 			ImageIcon iris = new ImageIcon(JIPToolkit.getAWTImage(imgCanny));
 			// jLabel1.setIcon(iris);
-
+			
+			//TODO: Wrapper de binarize
 			FBinarize fBinarize = new FBinarize();
 			fBinarize.setParamValue("u1", 30);
 			fBinarize.setParamValue("u2", 255);
