@@ -116,27 +116,40 @@ public class Circulo extends Circunferencia {
 	/**
 	 * Get the closest centers
 	 */
-	public List<Circunferencia> getClosestCenters(List<Circunferencia> points) {
+	public static void getClosestCenters(List<Circunferencia> points, Circunferencia iris, Circunferencia pupila) {
 		// TODO: List of points a lista de circunferencias
-		List<Circulo> toReturn = new ArrayList<Circulo>();
+		List<Circulo> aux = new ArrayList<Circulo>();
+		List<Circunferencia> toReturn = new ArrayList<Circunferencia>();
+		double distance = Double.POSITIVE_INFINITY;
 		for (Circunferencia circunferencia : points) {
-			toReturn.add(new Circulo(circunferencia.centroX, circunferencia.centroY));
+			aux.add(new Circulo(circunferencia.centroX, circunferencia.centroY, circunferencia.radio));
 		}
 
-		Circulo[] closest = new Circulo[toReturn.size()];
+		Circulo[] closest = new Circulo[aux.size()];
 
-		KDTree tree = new KDTree(toReturn, 0); // WILL MODIFY 'points'
+		KDTree tree = new KDTree(aux, 0); // WILL MODIFY 'points'
 
-		for (int i = 0; i < toReturn.size(); i++) {
-			closest[i] = tree.findClosest(toReturn.get(i));
+		for (int i = 0; i < aux.size(); i++) {
+			closest[i] = tree.findClosest(aux.get(i));
 		}
 
-		for (int i = 0; i < toReturn.size(); i++) {
-			System.out.println(toReturn.get(i) + " is closest to " + closest[i] + " the distance is" + toReturn.get(i).distance(closest[i]));
-		}
-		// FIXME: Anadir casting
-		return points;
+		for (int i = 0; i < aux.size(); i++) {
+			double calculatedDistance = aux.get(i).distance(closest[i]);
+			if (calculatedDistance < distance) {
+				distance = calculatedDistance;
+				if (closest[i].getRadio() > aux.get(i).radio) {
+					iris = closest[i];
+					pupila = aux.get(i);
+				} else {
+					iris = aux.get(i);
+					pupila = closest[i];
+				}
+			}
 
+			System.out.println(aux.get(i) + " is closest to " + closest[i] + " the distance is" + calculatedDistance);
+		}
+		System.out.println("iris" + ": centro X: " + iris.centroX + " centroY: " + iris.centroY + " radio: " + iris.radio);
+		System.out.println("pupila" + ": centro X: " + pupila.centroX + " centroY: " + pupila.centroY + " radio: " + pupila.radio);
 	}
 
 	public double distance(Circulo p) {

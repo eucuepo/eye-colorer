@@ -27,7 +27,6 @@ import jipfunc.FColorToGray;
 import jipfunc.FHoughCirc;
 import jiputil.Circunferencia;
 
-import com.eyecolorer.gui.DrawPanel;
 import com.eyecolorer.image.Circulo;
 import com.eyecolorer.image.ImageUtil;
 import com.eyecolorer.image.functions.SmoothMedian;
@@ -120,8 +119,14 @@ public class UploadImage extends HttpServlet {
 			// repaint();
 			//dp.setIris(vecAux.get(0));
 			//dp.setPupila(vecAux.get(1));
-			Circunferencia circunferenciaIris = (Circunferencia) listaCirculos.get(1);
+			
+			
+			Circunferencia circunferenciaIris = (Circunferencia) listaCirculos.get(0);
 			Circunferencia circunferenciaPupila = (Circunferencia) listaCirculos.get(1);
+			//buscar los mas cercanos
+			Circulo.getClosestCenters(listaCirculos,circunferenciaIris,circunferenciaPupila);			
+			
+		
 			for (int i = 0; i < vecAux.size(); i++) {
 				Circunferencia c = (Circunferencia) vecAux.get(i);
 				System.out.println("circunferencia " + i + ": centro X: " + c.centroX + " centroY: " + c.centroY + " radio: " + c.radio);
