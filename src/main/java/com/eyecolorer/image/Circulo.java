@@ -116,10 +116,10 @@ public class Circulo extends Circunferencia {
 	/**
 	 * Get the closest centers
 	 */
-	public static void getClosestCenters(List<Circunferencia> points, Circunferencia iris, Circunferencia pupila) {
+	public static Circunferencia[] getClosestCenters(List<Circunferencia> points) {
 		// TODO: List of points a lista de circunferencias
 		List<Circulo> aux = new ArrayList<Circulo>();
-		List<Circunferencia> toReturn = new ArrayList<Circunferencia>();
+		Circunferencia[] eye = new Circunferencia[2];
 		double distance = Double.POSITIVE_INFINITY;
 		for (Circunferencia circunferencia : points) {
 			aux.add(new Circulo(circunferencia.centroX, circunferencia.centroY, circunferencia.radio));
@@ -138,18 +138,19 @@ public class Circulo extends Circunferencia {
 			if (calculatedDistance < distance) {
 				distance = calculatedDistance;
 				if (closest[i].getRadio() > aux.get(i).radio) {
-					iris = closest[i];
-					pupila = aux.get(i);
+					eye[1] = closest[i]; //iris
+					eye[0] = aux.get(i); //pupil
 				} else {
-					iris = aux.get(i);
-					pupila = closest[i];
+					eye[1] = aux.get(i); //pupil
+					eye[0] = closest[i]; //iris
 				}
 			}
 
 			System.out.println(aux.get(i) + " is closest to " + closest[i] + " the distance is" + calculatedDistance);
 		}
-		System.out.println("iris" + ": centro X: " + iris.centroX + " centroY: " + iris.centroY + " radio: " + iris.radio);
-		System.out.println("pupila" + ": centro X: " + pupila.centroX + " centroY: " + pupila.centroY + " radio: " + pupila.radio);
+		System.out.println("iris" + ": centro X: " + eye[1].centroX + " centroY: " + eye[1].centroY + " radio: " + eye[1].radio);
+		System.out.println("pupila" + ": centro X: " + eye[0].centroX + " centroY: " + eye[0].centroY + " radio: " + eye[0].radio);
+		return eye;
 	}
 
 	public double distance(Circulo p) {

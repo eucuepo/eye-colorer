@@ -52,7 +52,7 @@ public class DrawPanel extends JPanel {
 
 		// Clear background to white
 		g2.setColor(Color.WHITE);
-		g2.clearRect(0, 0, getWidth(), getHeight());
+		g2.clearRect(0, 0, 1024, 800);
 
 		// Draw square
 		// g2.setColor(Color.BLACK);

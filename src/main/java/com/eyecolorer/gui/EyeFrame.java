@@ -18,9 +18,9 @@ import com.eyecolorer.image.ImageUtil;
 /**
  * @author cs02rm0
  */
-public class IrisFrame extends javax.swing.JFrame {
+public class EyeFrame extends javax.swing.JFrame {
 
-	public IrisFrame() {
+	public EyeFrame() {
 		initComponents();
 	}
 
@@ -100,7 +100,8 @@ public class IrisFrame extends javax.swing.JFrame {
 		f = new File(file);
 		try {
 			img = ImageIO.read(f);
-			img = ImageUtil.changeEyeColor(new Color(255, 0, 0), img);
+			
+			//img = ImageUtil.changeEyeColor(new Color(255, 0, 0), img);
 			dp.setBi(img);
 
 			// fill image
@@ -133,7 +134,7 @@ public class IrisFrame extends javax.swing.JFrame {
 
 	public static void main(String args[]) {
 		System.setProperty("java.util.prefs.syncInterval", "2000000");
-		new IrisFrame().show();
+		new EyeFrame().show();
 	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables

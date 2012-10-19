@@ -31,22 +31,21 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!--  <dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.2</version>
-		</dependency>-->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.3.2</version>
-		</dependency>
+		<!-- <dependency> <groupId>commons-fileupload</groupId> <artifactId>commons-fileupload</artifactId> 
+			<version>1.2.2</version> </dependency> <dependency> <groupId>org.apache.commons</groupId> 
+			<artifactId>commons-io</artifactId> <version>1.3.2</version> </dependency> -->
 
 		<!-- Jares independientes -->
 		<dependency>
 			<groupId>com.example</groupId>
 			<artifactId>javavis</artifactId>
 			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jviolajones</groupId>
+			<artifactId>jviolajones</artifactId>
+			<version>1.0.2</version>
 		</dependency>
 	</dependencies>
 
