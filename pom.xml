@@ -43,9 +43,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>jviolajones</groupId>
-			<artifactId>jviolajones</artifactId>
-			<version>1.0.2</version>
+			<groupId>com.example</groupId>
+			<artifactId>jviola</artifactId>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 
