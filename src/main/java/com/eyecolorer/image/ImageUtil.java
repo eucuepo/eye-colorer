@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import org.apache.log4j.Logger;
@@ -47,16 +49,24 @@ public class ImageUtil {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
 		// Set the eye color
-		// TODO: Add alpha parameter
-		// TODO: Fade borders with gradient paint
-		// Create and set a RadialGradient centered on the object,
-		// going from white at the center to black at the edges
-		// RadialGradientPaint paint = new RadialGradientPaint(center, radius,
-		// dist, colors);
+		// Create and set a RadialGradient centered on the eye to outside
+		Color[] colors = {
+				new Color(eyeColor.getRed(), eyeColor.getGreen(),
+						eyeColor.getBlue(), 10),
+				new Color(eyeColor.getRed(), eyeColor.getGreen(),
+						eyeColor.getBlue(), 60),
+				new Color(eyeColor.getRed(), eyeColor.getGreen(),
+						eyeColor.getBlue(), 60),
+				new Color(eyeColor.getRed(), eyeColor.getGreen(),
+						eyeColor.getBlue(), 0) };
+		Point2D center = new Point2D.Float(pupilPosX+(innerRadius/2), pupilPosY+(innerRadius/2));
+		float[] dist = { .15f, .25f, .8f, .9f };
+		RadialGradientPaint radialPaint = new RadialGradientPaint(center,
+				outerRadius, dist, colors);
 		// g2d.setPaint(paint);
-		Color paint = new Color(eyeColor.getRed(), eyeColor.getGreen(),
-				eyeColor.getBlue(), 80);
-		g.setPaint(paint);
+		// Color paint = new Color(eyeColor.getRed(), eyeColor.getGreen(),
+		// eyeColor.getBlue(), 60);
+		g.setPaint(radialPaint);
 
 		// paint the eye!
 		g.fill(eye);
@@ -190,7 +200,7 @@ public class ImageUtil {
 		g.dispose();
 		return imageBuff;
 	}
-	
+
 	public static BufferedImage applyGrayscaleMaskToAlpha(BufferedImage image,
 			BufferedImage mask) {
 		int width = image.getWidth();

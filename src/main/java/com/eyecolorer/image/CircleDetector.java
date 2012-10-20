@@ -27,7 +27,7 @@ public class CircleDetector {
 	private static final int CANNY_BRIGHTNESS = 100;
 	private static final int BINARIZE_LOW_THRESHOLD = 25;
 	private static final int BINARIZE_HIGH_THRESHOLD = 255;
-	
+
 	public static List<Circle> getEyeCandidates(BufferedImage bi) {
 		JIPImage jipImage = JIPToolkit.getColorImage(bi);
 
@@ -53,24 +53,23 @@ public class CircleDetector {
 		System.out.println("Numero de circulos antes de filtros: "
 				+ listaCirculos.size());
 		for (int i = 0; i < listaCirculos.size(); i++) {
-			Circle c =  listaCirculos.get(i);
+			Circle c = listaCirculos.get(i);
 			System.out.println("circunferencia " + i + ": centro X: "
-					+ c.getCentroX() + " centroY: " + c.getCentroY() + " radio: "
-					+ c.getRadio());
+					+ c.getCenterX() + " centroY: " + c.getCenterY()
+					+ " radio: " + c.getRadius());
 		}
 		if (listaCirculos.size() == 0) {
 			// no circles found, let's do another pass with more relaxed args
 			listaCirculos = performPass(imgBinarize, 50, 28, 20, 60);
 
 		}
-		
+
 		return listaCirculos;
 	}
 
 	@SuppressWarnings("unchecked")
-	private static List<Circle> performPass(JIPImage imgBinarize,
-			int cropping, int houghThreshold, int houghMinRadius,
-			int houghMaxRadius) {
+	private static List<Circle> performPass(JIPImage imgBinarize, int cropping,
+			int houghThreshold, int houghMinRadius, int houghMaxRadius) {
 		Vector<Circunferencia> vecAux;
 		// crop the image to the center
 		FCrop fCrop = new FCrop();
@@ -80,7 +79,7 @@ public class CircleDetector {
 		fCrop.setParamValue("h", imgBinarize.getHeight() - cropping * 2);
 		imgBinarize = fCrop.processImg(imgBinarize);
 		// try a second pass with lower threshold
-		
+
 		FHoughCirc fHoughCirc = new FHoughCirc();
 		fHoughCirc.setParamValue("thres", houghThreshold);
 		fHoughCirc.setParamValue("Rmin", houghMinRadius);
@@ -90,8 +89,8 @@ public class CircleDetector {
 				.getResultValueObj("circum");
 		List<Circle> listaCirculos = new ArrayList<Circle>();
 		for (Circunferencia circunferencia : vecAux) {
-			Circle c = new Circle(circunferencia.centroX+cropping,
-					circunferencia.centroY+cropping, circunferencia.radio);
+			Circle c = new Circle(circunferencia.centroX + cropping,
+					circunferencia.centroY + cropping, circunferencia.radio);
 			listaCirculos.add(c);
 		}
 		return listaCirculos;
@@ -113,5 +112,4 @@ public class CircleDetector {
 		return imageBuff;
 	}
 
-	
 }

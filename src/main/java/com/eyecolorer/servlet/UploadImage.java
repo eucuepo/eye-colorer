@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import com.eyecolorer.image.EyeColorer;
+import com.eyecolorer.image.EyeDetector;
 
 @MultipartConfig
 public class UploadImage extends HttpServlet {
@@ -40,12 +40,12 @@ public class UploadImage extends HttpServlet {
 		try {
 			OutputStream outputStream = response.getOutputStream();
 			// TODO: add support for several image formats
-			response.setContentType("image/jpg");
+			response.setContentType("image/png");
 
 			BufferedImage bi = ImageIO.read(file);
-			EyeColorer eyeColorer = new EyeColorer();
-			BufferedImage masked = eyeColorer.changeEyeColor(eyeColor, bi);
-			ImageIO.write(masked, "jpg", outputStream);
+			EyeDetector eyeDetector = new EyeDetector();
+			bi = eyeDetector.getEyesChange(bi, eyeColor);
+			ImageIO.write(bi, "png", outputStream);
 			outputStream.close();
 
 		} catch (Exception e) {

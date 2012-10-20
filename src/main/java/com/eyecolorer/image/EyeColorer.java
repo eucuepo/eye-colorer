@@ -21,7 +21,7 @@ public class EyeColorer {
 
 			Circle pupil = new Circle(listaCirculos.get(0).getX(),
 					listaCirculos.get(0).getY() + 1, listaCirculos.get(0)
-							.getRadio() / 3);
+							.getRadius() / 3);
 			log.debug("Adding pupil: " + pupil);
 			listaCirculos.add(pupil);
 		}
@@ -40,18 +40,18 @@ public class EyeColorer {
 			return null;
 		} else {
 			log.debug("iris" + ": centro X: " + eye[1].getX() + " centroY: "
-					+ eye[1].getY() + " radio: " + eye[1].getRadio());
+					+ eye[1].getY() + " radio: " + eye[1].getRadius());
 			log.debug("pupila" + ": centro X: " + eye[0].getX() + " centroY: "
-					+ eye[0].getY() + " radio: " + eye[0].getRadio());
+					+ eye[0].getY() + " radio: " + eye[0].getRadius());
 			eyeImage = ImageUtil.createEyeMask(
 					(int) (bi.getWidth() / scaleFactor),
 					(int) (bi.getHeight() / scaleFactor),
-					(int) (eye[0].getRadio() * 2 / scaleFactor),
-					(int) (eye[1].getRadio() * 2 / scaleFactor),
-					(int) ((eye[1].getX() - eye[1].getRadio()) / scaleFactor),
-					(int) ((eye[1].getY() - eye[1].getRadio()) / scaleFactor),
-					(int) ((eye[0].getX() - eye[0].getRadio()) / scaleFactor),
-					(int) ((eye[0].getY() - eye[0].getRadio()) / scaleFactor),
+					(int) (eye[0].getRadius() * 2 / scaleFactor),
+					(int) (eye[1].getRadius() * 2 / scaleFactor),
+					(int) ((eye[1].getX() - eye[1].getRadius()) / scaleFactor),
+					(int) ((eye[1].getY() - eye[1].getRadius()) / scaleFactor),
+					(int) ((eye[0].getX() - eye[0].getRadius()) / scaleFactor),
+					(int) ((eye[0].getY() - eye[0].getRadius()) / scaleFactor),
 					eyeColor);
 		}
 		// mix the original image and the masks

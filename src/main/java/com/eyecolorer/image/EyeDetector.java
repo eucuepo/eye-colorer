@@ -1,7 +1,6 @@
 package com.eyecolorer.image;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -11,8 +10,6 @@ import java.util.List;
 import jviolajones.Detector;
 
 import org.apache.log4j.Logger;
-
-import com.eyecolorer.gui.ImageFrame;
 
 public class EyeDetector {
 
@@ -79,9 +76,9 @@ public class EyeDetector {
 				originalImage = ImageUtil.combineImages(originalImage,
 						extracted, (int) (rectangle.x / scaleFactor),
 						(int) (rectangle.y / scaleFactor));
-				ImageFrame imageFrame = new ImageFrame(extracted);
-				imageFrame.setSize(new Dimension(400, 400));
-				imageFrame.setVisible(true);
+//				ImageFrame imageFrame = new ImageFrame(extracted);
+//				imageFrame.setSize(new Dimension(400, 400));
+//				imageFrame.setVisible(true);
 			}
 		}
 		return originalImage;
