@@ -15,8 +15,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -24,9 +22,7 @@ import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
-import com.eyecolorer.image.EyeColorer;
 import com.eyecolorer.image.EyeDetector;
-import com.eyecolorer.image.ImageUtil;
 
 public class EyeFrame extends javax.swing.JFrame {
 
@@ -112,7 +108,6 @@ public class EyeFrame extends javax.swing.JFrame {
 		ch.setVisible(true);
 
 		String file = ch.getDirectory() + ch.getFile();
-		System.out.println(file);
 		f = new File(file);
 		try {
 			originalImage = ImageIO.read(f);
@@ -127,7 +122,7 @@ public class EyeFrame extends javax.swing.JFrame {
 			setContentPane(d);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error" + e.getMessage());
 		}
 	}
 
