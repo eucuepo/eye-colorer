@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class ImageFrame extends javax.swing.JFrame {
 
 	JPanel jPanel1;
@@ -19,7 +20,7 @@ public class ImageFrame extends javax.swing.JFrame {
 	}
 
 	private void initComponents() {// GEN-BEGIN:initComponents
-		setPreferredSize(new Dimension(400,400));
+		getContentPane().setPreferredSize(new Dimension(400,400));
 		jPanel1 = new javax.swing.JPanel();
 		jLabel1 = new javax.swing.JLabel();
 		jLabel1.setIcon(new ImageIcon(img));

@@ -36,7 +36,7 @@ public class KDTree {
 	}
 
 	public Circulo findClosest(Circulo target) {
-		Circulo closest = point.equals(target) ? Circulo.INFINITY : point;
+		Circulo closest = point.equalsPoint(target) ? Circulo.INFINITY : point;
 		double bestDist = closest.distance(target);
 		double spacing = target.coord[d] - point.coord[d];
 		KDTree rightSide = (spacing < 0) ? childA : childB;

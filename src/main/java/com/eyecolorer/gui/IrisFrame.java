@@ -9,20 +9,27 @@ import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
-import com.eyecolorer.image.ImageUtil;
+import com.eyecolorer.image.EyeColorer;
 
-/**
- * @author cs02rm0
- */
+@SuppressWarnings("serial")
 public class IrisFrame extends javax.swing.JFrame {
 
 	public IrisFrame() {
 		initComponents();
 	}
+
+	private javax.swing.JButton jButton1;
+	private javax.swing.JMenu jMenu1;
+	private javax.swing.JMenuBar jMenuBar1;
+	private javax.swing.JMenuItem jMenuItem1;
+	private javax.swing.JPanel jPanel1;
+	private javax.swing.JPanel jPanel2;
+	private javax.swing.JPanel jPanel3;
+	private javax.swing.JPanel jPanel4;
+	private DrawPanel dp;
 
 	private void initComponents() {// GEN-BEGIN:initComponents
 		jPanel1 = new javax.swing.JPanel();
@@ -30,14 +37,12 @@ public class IrisFrame extends javax.swing.JFrame {
 		jPanel3 = new javax.swing.JPanel();
 		jButton1 = new javax.swing.JButton();
 		jPanel4 = new javax.swing.JPanel();
-		jLabel1 = new javax.swing.JLabel();
-		jLabel2 = new javax.swing.JLabel();
 		jMenuBar1 = new javax.swing.JMenuBar();
 		jMenu1 = new javax.swing.JMenu();
 		jMenuItem1 = new javax.swing.JMenuItem();
 		dp = new DrawPanel();
 
-		setTitle("Iris Concurso");
+		setTitle("Eye color changer");
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent evt) {
 				exitForm(evt);
@@ -60,7 +65,6 @@ public class IrisFrame extends javax.swing.JFrame {
 		jPanel3.add(jButton1);
 		jPanel2.add(jPanel3);
 		jPanel4.setLayout(new java.awt.BorderLayout());
-		// jPanel4.add(jLabel1, java.awt.BorderLayout.CENTER);
 		jPanel4.add(dp, java.awt.BorderLayout.CENTER);
 		jPanel2.add(jPanel4);
 		getContentPane().add(jPanel2, java.awt.BorderLayout.NORTH);
@@ -76,7 +80,7 @@ public class IrisFrame extends javax.swing.JFrame {
 		setJMenuBar(jMenuBar1);
 
 		pack();
-	}// GEN-END:initComponents
+	}
 
 	private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
 		exit();
@@ -100,7 +104,7 @@ public class IrisFrame extends javax.swing.JFrame {
 		f = new File(file);
 		try {
 			img = ImageIO.read(f);
-			img = ImageUtil.changeEyeColor(new Color(255, 0, 0), img);
+			img = EyeColorer.changeEyeColor(new Color(255, 0, 0), img);
 			dp.setBi(img);
 
 			// fill image
@@ -133,21 +137,7 @@ public class IrisFrame extends javax.swing.JFrame {
 
 	public static void main(String args[]) {
 		System.setProperty("java.util.prefs.syncInterval", "2000000");
-		new IrisFrame().show();
+		new IrisFrame().setVisible(true);
 	}
-
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton jButton1;
-	private javax.swing.JLabel jLabel1;
-	private javax.swing.JLabel jLabel2;
-	private javax.swing.JMenu jMenu1;
-	private javax.swing.JMenuBar jMenuBar1;
-	private javax.swing.JMenuItem jMenuItem1;
-	private javax.swing.JPanel jPanel1;
-	private javax.swing.JPanel jPanel2;
-	private javax.swing.JPanel jPanel3;
-	private javax.swing.JPanel jPanel4;
-	private DrawPanel dp;
-	// End of variables declaration//GEN-END:variables
 
 }
