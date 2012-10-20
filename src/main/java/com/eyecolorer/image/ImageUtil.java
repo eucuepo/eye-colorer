@@ -199,13 +199,13 @@ public class ImageUtil {
 
 		// TODO: Wrapper de binarize
 		FBinarize fBinarize = new FBinarize();
-		fBinarize.setParamValue("u1", 40);
+		fBinarize.setParamValue("u1", 30);
 		fBinarize.setParamValue("u2", 255);
 		JIPImage imgBinarize = fBinarize.processImg(imageGray);
 
 		// TODO: Adjust the values with image dimensions
 		FHoughCirc fHougCir = new FHoughCirc();
-		fHougCir.setParamValue("thres", 25);
+		fHougCir.setParamValue("thres", 30);
 		fHougCir.setParamValue("Rmin", 10);
 		fHougCir.setParamValue("Rmax", 80);
 		fHougCir.processImg(imgBinarize);

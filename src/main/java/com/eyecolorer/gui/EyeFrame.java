@@ -7,12 +7,15 @@ package com.eyecolorer.gui;
 
 import java.awt.Color;
 import java.awt.FileDialog;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.eyecolorer.image.EyeDetector;
 import com.eyecolorer.image.ImageUtil;
 
 /**
@@ -99,15 +102,36 @@ public class EyeFrame extends javax.swing.JFrame {
 		System.out.println(file);
 		f = new File(file);
 		try {
+			List<Rectangle> eyesList = EyeDetector.detectEyes(f);
 			img = ImageIO.read(f);
-			
-			//img = ImageUtil.changeEyeColor(new Color(255, 0, 0), img);
+			for (Rectangle rectangle : eyesList) {
+				System.out.println("Eye detected: height:" + rectangle.height
+						+ "width:" + rectangle.width + " x:" + rectangle.x
+						+ " y:" + rectangle.y);
+			}
+
+			List<BufferedImage> extractEyes = new ArrayList<BufferedImage>();
+			for (Rectangle rectangle : eyesList) {
+				//extract all the eyes
+				BufferedImage extracted = ImageUtil.cropImage(img, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+				extractEyes.add(extracted);
+			}
+
+			// for each image, paint eyes if possible
+			for (BufferedImage bufferedImage : extractEyes) {
+				bufferedImage = ImageUtil.changeEyeColor(new Color(255, 0, 0), bufferedImage);
+				//tengo el ojo pintado, combinar con la original
+				//ImageUtil.combineImages(image, overlay)
+				new ImageFrame(bufferedImage).setVisible(true);
+				File outputFile = new File("C:/result"+bufferedImage.getHeight()+".jpg");
+				ImageIO.write(bufferedImage, "JPG", outputFile);
+			}
 			dp.setBi(img);
 
 			// fill image
 			// Save
-			File outputFile = new File("C:/result.png");
-			ImageIO.write(img, "PNG", outputFile);
+			//File outputFile = new File("C:/result.png");
+			// ImageIO.write(img, "PNG", outputFile);
 
 			// System.out.println("Numero de circulos: " +
 			// fHougCir.getResultValueInt("ncirc"));
