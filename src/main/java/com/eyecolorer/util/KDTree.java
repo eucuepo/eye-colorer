@@ -4,21 +4,21 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.eyecolorer.image.Circulo;
+import com.eyecolorer.image.Circle;
 
 public class KDTree {
 	// 2D k-d tree
 	private KDTree childA, childB;
-	private Circulo point; // defines the boundary
+	private Circle point; // defines the boundary
 	private int d; // dimension: 0 => left/right split, 1 => up/down split
 
-	public KDTree(List<Circulo> points, int depth) {
+	public KDTree(List<Circle> points, int depth) {
 		childA = null;
 		childB = null;
 		d = depth % 2;
 
 		// find median by sorting in dimension 'd' (either x or y)
-		Comparator<Circulo> comp = new Circulo.PointComp(d);
+		Comparator<Circle> comp = new Circle.PointComp(d);
 		Collections.sort(points, comp);
 
 		int median = (points.size() - 1) / 2;
@@ -35,8 +35,8 @@ public class KDTree {
 		}
 	}
 
-	public Circulo findClosest(Circulo target) {
-		Circulo closest = point.equalsPoint(target) ? Circulo.INFINITY : point;
+	public Circle findClosest(Circle target) {
+		Circle closest = point.equalsPoint(target) ? Circle.INFINITY : point;
 		double bestDist = closest.distance(target);
 		double spacing = target.coord[d] - point.coord[d];
 		KDTree rightSide = (spacing < 0) ? childA : childB;
@@ -49,7 +49,7 @@ public class KDTree {
 		 */
 
 		if (rightSide != null) {
-			Circulo candidate = rightSide.findClosest(target);
+			Circle candidate = rightSide.findClosest(target);
 			if (candidate.distance(target) < bestDist) {
 				closest = candidate;
 				bestDist = closest.distance(target);
@@ -57,7 +57,7 @@ public class KDTree {
 		}
 
 		if (otherSide != null && (Math.abs(spacing) < bestDist)) {
-			Circulo candidate = otherSide.findClosest(target);
+			Circle candidate = otherSide.findClosest(target);
 			if (candidate.distance(target) < bestDist) {
 				closest = candidate;
 				bestDist = closest.distance(target);

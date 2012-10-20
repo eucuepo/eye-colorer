@@ -28,7 +28,7 @@ public class CircleDetector {
 	private static final int BINARIZE_LOW_THRESHOLD = 25;
 	private static final int BINARIZE_HIGH_THRESHOLD = 255;
 	
-	public static List<Circulo> getEyeCandidates(BufferedImage bi) {
+	public static List<Circle> getEyeCandidates(BufferedImage bi) {
 		JIPImage jipImage = JIPToolkit.getColorImage(bi);
 
 		SmoothMedian smoothMedian = new SmoothMedian();
@@ -49,11 +49,11 @@ public class CircleDetector {
 		fBinarize.setParamValue("u1", BINARIZE_LOW_THRESHOLD);
 		fBinarize.setParamValue("u2", BINARIZE_HIGH_THRESHOLD);
 		JIPImage imgBinarize = fBinarize.processImg(imageGray);
-		List<Circulo> listaCirculos = performPass(imgBinarize, 0, 30, 20, 70);
+		List<Circle> listaCirculos = performPass(imgBinarize, 0, 30, 20, 70);
 		System.out.println("Numero de circulos antes de filtros: "
 				+ listaCirculos.size());
 		for (int i = 0; i < listaCirculos.size(); i++) {
-			Circulo c =  listaCirculos.get(i);
+			Circle c =  listaCirculos.get(i);
 			System.out.println("circunferencia " + i + ": centro X: "
 					+ c.getCentroX() + " centroY: " + c.getCentroY() + " radio: "
 					+ c.getRadio());
@@ -68,7 +68,7 @@ public class CircleDetector {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static List<Circulo> performPass(JIPImage imgBinarize,
+	private static List<Circle> performPass(JIPImage imgBinarize,
 			int cropping, int houghThreshold, int houghMinRadius,
 			int houghMaxRadius) {
 		Vector<Circunferencia> vecAux;
@@ -88,9 +88,9 @@ public class CircleDetector {
 		fHoughCirc.processImg(imgBinarize);
 		vecAux = (Vector<Circunferencia>) fHoughCirc
 				.getResultValueObj("circum");
-		List<Circulo> listaCirculos = new ArrayList<Circulo>();
+		List<Circle> listaCirculos = new ArrayList<Circle>();
 		for (Circunferencia circunferencia : vecAux) {
-			Circulo c = new Circulo(circunferencia.centroX+cropping,
+			Circle c = new Circle(circunferencia.centroX+cropping,
 					circunferencia.centroY+cropping, circunferencia.radio);
 			listaCirculos.add(c);
 		}

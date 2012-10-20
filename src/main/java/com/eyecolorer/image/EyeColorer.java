@@ -15,23 +15,23 @@ public class EyeColorer {
 		double scaleFactor = ImageUtil.getScaleFactor(300, toChange);
 		BufferedImage bi = ImageUtil.scaleImage(toChange, scaleFactor);
 
-		List<Circulo> listaCirculos = CircleDetector.getEyeCandidates(bi);
+		List<Circle> listaCirculos = CircleDetector.getEyeCandidates(bi);
 
 		if (listaCirculos.size() > 0 && listaCirculos.get(0) != null) {
 
-			Circulo pupil = new Circulo(listaCirculos.get(0).getX(),
+			Circle pupil = new Circle(listaCirculos.get(0).getX(),
 					listaCirculos.get(0).getY() + 1, listaCirculos.get(0)
 							.getRadio() / 3);
 			log.debug("Adding pupil: " + pupil);
 			listaCirculos.add(pupil);
 		}
-		listaCirculos = Circulo.getConcentricCircunferencia(listaCirculos);
+		listaCirculos = Circle.getConcentricCircunferencia(listaCirculos);
 
 		if (listaCirculos.size() < 2) {
 			return null;
 		}
 
-		Circulo[] eye = Circulo.getClosestCenters(listaCirculos);
+		Circle[] eye = Circle.getClosestCenters(listaCirculos);
 
 		log.debug("Number of circles after filters: " + listaCirculos.size());
 

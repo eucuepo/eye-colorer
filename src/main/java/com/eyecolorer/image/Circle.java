@@ -7,17 +7,17 @@ import java.util.List;
 
 import com.eyecolorer.util.KDTree;
 
-public class Circulo {
+public class Circle {
 
 	private int centroX;
 	private int centroY;
 	private int radio;
-	public static final Circulo INFINITY = new Circulo(Integer.MAX_VALUE,
+	public static final Circle INFINITY = new Circle(Integer.MAX_VALUE,
 			Integer.MAX_VALUE, 0);
 
 	public int[] coord; // coord[0] = x, coord[1] = y
 
-	public Circulo(int x, int y, int radio) {
+	public Circle(int x, int y, int radio) {
 		this.centroX = x;
 		this.centroY = y;
 		this.radio = radio;
@@ -65,7 +65,7 @@ public class Circulo {
 	 * @param b
 	 * @return
 	 */
-	private static boolean isCircleInCircle(Circulo a, Circulo b) {
+	private static boolean isCircleInCircle(Circle a, Circle b) {
 		// the circle is inside if the distance between the centre is less than
 		// the difference in the radius
 		int dx = a.getX() - b.getX();
@@ -75,20 +75,20 @@ public class Circulo {
 		return radiusDifference * radiusDifference > centreDistanceSquared;
 	}
 
-	public static double distanceTo(Circulo a, Circulo b) {
+	public static double distanceTo(Circle a, Circle b) {
 		return Math.sqrt((a.centroX - b.centroX) * (a.centroX - b.centroX)
 				+ (a.centroY - b.centroY) * (a.centroY - b.centroY));
 	}
 
-	public static List<Circulo> getConcentricCircunferencia(
-			List<Circulo> circleList) {
+	public static List<Circle> getConcentricCircunferencia(
+			List<Circle> circleList) {
 		if (circleList.size() == 1) {
 			return circleList;
 		}
-		HashSet<Circulo> toReturn = new HashSet<Circulo>();
-		List<Circulo> aux = new ArrayList<Circulo>();
-		for (Circulo circle : circleList) {
-			for (Circulo toCheck : circleList) {
+		HashSet<Circle> toReturn = new HashSet<Circle>();
+		List<Circle> aux = new ArrayList<Circle>();
+		for (Circle circle : circleList) {
+			for (Circle toCheck : circleList) {
 				// if the circles are not the same and one is inside another,
 				if (!toCheck.equals(circle)
 						&& isCircleInCircle(circle, toCheck)) {
@@ -106,10 +106,10 @@ public class Circulo {
 	/**
 	 * Get the closest centers
 	 */
-	public static Circulo[] getClosestCenters(List<Circulo> points) {
+	public static Circle[] getClosestCenters(List<Circle> points) {
 		// TODO: List of points a lista de circunferencias
 		// List<Circulo> aux = new ArrayList<Circulo>();
-		Circulo[] eye = new Circulo[2];
+		Circle[] eye = new Circle[2];
 
 		// solo hay dos, perfect match
 		if (points.size() == 2) {
@@ -128,7 +128,7 @@ public class Circulo {
 		// circunferencia.radio));
 		// }
 
-		Circulo[] closest = new Circulo[points.size()];
+		Circle[] closest = new Circle[points.size()];
 
 		KDTree tree = new KDTree(points, 0); // WILL MODIFY 'points'
 
@@ -156,13 +156,13 @@ public class Circulo {
 		return eye;
 	}
 
-	public double distance(Circulo p) {
+	public double distance(Circle p) {
 		double dX = getX() - p.getX();
 		double dY = getY() - p.getY();
 		return Math.sqrt(dX * dX + dY * dY);
 	}
 
-	public boolean equalsPoint(Circulo p) {
+	public boolean equalsPoint(Circle p) {
 		return (getX() == p.getX()) && (getY() == p.getY());
 	}
 
@@ -170,14 +170,14 @@ public class Circulo {
 		return "(" + getX() + ", " + getY() + ")";
 	}
 
-	public static class PointComp implements Comparator<Circulo> {
+	public static class PointComp implements Comparator<Circle> {
 		int d; // the dimension to compare in (0 => x, 1 => y)
 
 		public PointComp(int dimension) {
 			d = dimension;
 		}
 
-		public int compare(Circulo a, Circulo b) {
+		public int compare(Circle a, Circle b) {
 			return (int) (a.coord[d] - b.coord[d]);
 		}
 	}
