@@ -107,7 +107,6 @@ public class EyeFrame extends javax.swing.JFrame {
 
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 		FileDialog ch = new FileDialog(this, "Choose a file", FileDialog.LOAD);
-		BufferedImage thumbImage;
 		BufferedImage originalImage;
 		File f;
 		ch.setVisible(true);
@@ -117,87 +116,19 @@ public class EyeFrame extends javax.swing.JFrame {
 		f = new File(file);
 		try {
 			originalImage = ImageIO.read(f);
-			// prepare image
-			// Speed optimization. If the image is large enough, is safe to crop
-			// the bottom third
-			if (originalImage.getHeight() > 1024) {
-				thumbImage = ImageUtil.cropImage(originalImage, 0, 0,
-						originalImage.getWidth(),
-						(int) (originalImage.getHeight() / 1.5));
-			}
-			double scaleFactor = ImageUtil.getScaleFactor(600, originalImage);
-			// Scale to optimize for haar cascades
-			thumbImage = ImageUtil.scaleImage(originalImage, scaleFactor);
 
-			List<Rectangle> eyesList = EyeDetector.detectEyes(thumbImage);
+			EyeDetector eyeDetector = new EyeDetector();
+			originalImage = eyeDetector.getEyesChange(originalImage, new Color(
+					255, 0, 0, 80));
 
-			// detect overlapping rectangles
-			eyesList = removeOverlappingRectangles(eyesList);
-			System.out.println("Rectangles after filter: " + eyesList.size());
-			for (Rectangle rectangle : eyesList) {
-				System.out.println("Eye detected: height:" + rectangle.height
-						+ "width:" + rectangle.width + " x:" + rectangle.x
-						+ " y:" + rectangle.y);
-			}
-
-			for (Rectangle rectangle : eyesList) {
-				// extract all the eyes from the original image using the
-				// generated faces
-				BufferedImage extracted = ImageUtil.cropImage(originalImage,
-						(int) (rectangle.x / scaleFactor),
-						(int) (rectangle.y / scaleFactor),
-						(int) (rectangle.width / scaleFactor),
-						(int) (rectangle.height / scaleFactor));
-
-				extracted = EyeColorer.changeEyeColor(new Color(255, 0, 0),
-						extracted);
-				if (extracted != null) {
-					// tengo el ojo pintado, combinar con la original
-					log.debug("Extracted eye, paint it");
-					originalImage = ImageUtil.combineImages(originalImage,
-							extracted, (int) (rectangle.x / scaleFactor),
-							(int) (rectangle.y / scaleFactor));
-					ImageFrame imageFrame = new ImageFrame(extracted);
-					imageFrame.setSize(new Dimension(400, 400));
-					imageFrame.setVisible(true);
-					File outputFile = new File("C:/result"
-							+ extracted.getHeight() + ".png");
-					ImageIO.write(extracted, "PNG", outputFile);
-				}
-			}
 			ImageViewer d = new ImageViewer(originalImage);
-			d.setRects(eyesList);
-			d.setScaleFactor(scaleFactor);
+			d.setRects(eyeDetector.getEyesList());
+			d.setScaleFactor(eyeDetector.getScaleFactor());
 			setContentPane(d);
-			dp.setBi(thumbImage);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private List<Rectangle> removeOverlappingRectangles(List<Rectangle> rectList) {
-		HashSet<Rectangle> rectangleClearSet = new HashSet<Rectangle>();
-		List<Rectangle> clearList = new ArrayList<Rectangle>();
-		for (Rectangle innerRectangle : rectList) {
-			boolean alone = true;
-			for (Rectangle rectangle : rectList) {
-				if (!innerRectangle.equals(rectangle)
-						&& innerRectangle.intersects(rectangle)) {
-					alone = false;
-					if (innerRectangle.width > rectangle.width) {
-						rectangleClearSet.add(innerRectangle);
-					} else {
-						rectangleClearSet.add(rectangle);
-					}
-				}
-			}
-			if (alone) {
-				rectangleClearSet.add(innerRectangle);
-			}
-		}
-		clearList.addAll(rectangleClearSet);
-		return clearList;
 	}
 
 	@SuppressWarnings("serial")

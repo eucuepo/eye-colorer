@@ -10,7 +10,7 @@ public class EyeColorer {
 
 	private static Logger log = Logger.getLogger(EyeColorer.class.getName());
 
-	public static BufferedImage changeEyeColor(Color eyeColor,
+	public BufferedImage changeEyeColor(Color eyeColor,
 			BufferedImage toChange) {
 		double scaleFactor = ImageUtil.getScaleFactor(300, toChange);
 		BufferedImage bi = ImageUtil.scaleImage(toChange, scaleFactor);

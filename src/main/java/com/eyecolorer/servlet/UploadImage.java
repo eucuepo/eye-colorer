@@ -23,7 +23,6 @@ public class UploadImage extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -8414206228109706371L;
 
-	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		System.out.println("request: " + request);
@@ -44,7 +43,8 @@ public class UploadImage extends HttpServlet {
 			response.setContentType("image/jpg");
 
 			BufferedImage bi = ImageIO.read(file);
-			BufferedImage masked = EyeColorer.changeEyeColor(eyeColor, bi);
+			EyeColorer eyeColorer = new EyeColorer();
+			BufferedImage masked = eyeColorer.changeEyeColor(eyeColor, bi);
 			ImageIO.write(masked, "jpg", outputStream);
 			outputStream.close();
 
