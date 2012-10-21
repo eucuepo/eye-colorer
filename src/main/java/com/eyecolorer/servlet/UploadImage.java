@@ -2,6 +2,7 @@ package com.eyecolorer.servlet;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -46,6 +47,11 @@ public class UploadImage extends HttpServlet {
 			EyeDetector eyeDetector = new EyeDetector();
 			bi = eyeDetector.getEyesChange(bi, eyeColor);
 			ImageIO.write(bi, "png", outputStream);
+			//save to disk
+			OutputStream out = new FileOutputStream("/tmp/image.jpg");
+			ImageIO.write(bi, "png", out);
+			out.close();
+			
 			outputStream.close();
 
 		} catch (Exception e) {

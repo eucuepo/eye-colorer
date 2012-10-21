@@ -17,5 +17,13 @@
 		<servlet-name>upload</servlet-name>
 		<url-pattern>/UploadImage</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>getImage</servlet-name>
+		<servlet-class>com.eyecolorer.servlet.GetImage</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>getImage</servlet-name>
+		<url-pattern>/getImage/*</url-pattern>
+	</servlet-mapping>
 
 </web-app>

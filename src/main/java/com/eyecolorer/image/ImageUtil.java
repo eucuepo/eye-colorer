@@ -59,7 +59,8 @@ public class ImageUtil {
 						eyeColor.getBlue(), 60),
 				new Color(eyeColor.getRed(), eyeColor.getGreen(),
 						eyeColor.getBlue(), 0) };
-		Point2D center = new Point2D.Float(pupilPosX+(innerRadius/2), pupilPosY+(innerRadius/2));
+		Point2D center = new Point2D.Float(pupilPosX + (innerRadius / 2),
+				pupilPosY + (innerRadius / 2));
 		float[] dist = { .15f, .25f, .8f, .9f };
 		RadialGradientPaint radialPaint = new RadialGradientPaint(center,
 				outerRadius, dist, colors);
@@ -218,6 +219,16 @@ public class ImageUtil {
 
 		image.setRGB(0, 0, width, height, imagePixels, 0, width);
 		return image;
+	}
+
+	public BufferedImage convertToJpg(BufferedImage image) {
+		// Attempt at PNG read fix
+		BufferedImage imageRGB = new BufferedImage(image.getWidth(),
+				image.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+		// write data into an RGB buffered image, no transparency
+		imageRGB.setData(image.getData());
+		return imageRGB;
 	}
 
 }
