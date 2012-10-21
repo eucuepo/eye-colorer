@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<title>Change your eye color!</title>
+<title>Change your eye colors!</title>
 <link rel="stylesheet" type="text/css" href="css/simple.css">
 <script type="text/javascript" src="script/jquery.js"></script>
 <script type="text/javascript" src="script/jscolor.js"></script>
