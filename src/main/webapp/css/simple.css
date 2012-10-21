@@ -1,0 +1,14 @@
+@CHARSET "ISO-8859-1";
+
+.wrapper{
+	
+}
+
+.loading {
+	float: left;
+	width: 100px;
+	height: 100px;
+	border: 2px dotted #CCCCCC;
+	background: url(script/ajax-loader.gif) no-repeat 39px 40px;
+	display: none;
+}

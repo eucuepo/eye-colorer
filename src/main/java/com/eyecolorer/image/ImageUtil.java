@@ -221,14 +221,17 @@ public class ImageUtil {
 		return image;
 	}
 
-	public BufferedImage convertToJpg(BufferedImage image) {
-		// Attempt at PNG read fix
-		BufferedImage imageRGB = new BufferedImage(image.getWidth(),
-				image.getHeight(), BufferedImage.TYPE_INT_RGB);
-
-		// write data into an RGB buffered image, no transparency
-		imageRGB.setData(image.getData());
-		return imageRGB;
+	public static BufferedImage convertToJpg(BufferedImage image) {
+		int w = image.getWidth();
+		int h = image.getHeight();
+		BufferedImage image2 = new BufferedImage(w, h,
+				BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = image2.createGraphics();
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, w, h);
+		g.drawRenderedImage(image, null);
+		g.dispose();
+		return image2;
 	}
 
 }
