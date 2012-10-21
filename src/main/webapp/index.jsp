@@ -78,10 +78,11 @@
 						<div class="loader"></div>
 					</form>
 				</div>
-
 			</div>
-
-
+			<div class="border signature">Developed by Eugenio Cuevas (eucuepo at
+				gmail) for a <a href="http://cloudspokes.com">Cloudspokes</a>
+				challenge
+			</div>
 		</div>
 	</div>
 </body>
