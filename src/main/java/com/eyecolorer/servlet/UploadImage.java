@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -42,31 +44,34 @@ public class UploadImage extends HttpServlet {
 		Part filePart = request.getPart("image"); // Retrieves <input
 													// type="file"
 													// name="file">
+		String multiface = request.getParameter("multiface");
 		InputStream file = filePart.getInputStream();
 
 		Color eyeColor = new Color(Integer.parseInt(color, 16));
 
 		try {
-			// OutputStream outputStream = response.getOutputStream();
-
 			response.setContentType("text/html");
 
 			BufferedImage bi = ImageIO.read(file);
 			EyeDetector eyeDetector = new EyeDetector();
-			bi = eyeDetector.getEyesChange(bi, eyeColor);
-
+			if (multiface.equals("true")) {
+				bi = eyeDetector.getEyesChangeMultiFace(bi, eyeColor);
+			} else {
+				bi = eyeDetector.getEyesChange(bi, eyeColor);
+			}
 			// resize to width 800
 			BufferedImage toSave = ImageUtil.scaleImage(bi, ImageUtil.getScaleFactor(800, bi));
 
+			// Append the date to the image file to avoid conflicts
+			Date date = new Date();
 			// convert to JPG
 			toSave = ImageUtil.convertToJpg(toSave);
-			OutputStream out = new FileOutputStream("/tmp/image.jpg");
+			OutputStream out = new FileOutputStream("/tmp/image" + date.getTime() + ".jpg");
 			// return to webpage
-			// ImageIO.write(toSave, "JPG", outputStream);
 			ImageIO.write(toSave, "JPG", out);
 
 			PrintWriter writer = response.getWriter();
-			writer.println("getImage/image.jpg");
+			writer.println("getImage/image" + date.getTime() + ".jpg");
 
 			out.close();
 

@@ -23,6 +23,8 @@ public class EyeDetector {
 
 	private List<Rectangle> eyesList;
 	private double scaleFactor;
+	private double faceScaleFactor;
+	private List<Rectangle> facesList;
 
 	public List<Rectangle> getEyesList() {
 		return eyesList;
@@ -32,14 +34,41 @@ public class EyeDetector {
 		this.eyesList = eyesList;
 	}
 
-	public double getScaleFactor() {
-		return scaleFactor;
+	public BufferedImage getEyesChangeMultiFace(BufferedImage originalImage, Color newColor) {
+		BufferedImage thumbImage;
+		// prepare image
+		this.faceScaleFactor = ImageUtil.getScaleFactor(600, originalImage);
+		// Scale to optimize for haar cascades
+		thumbImage = ImageUtil.scaleImage(originalImage, faceScaleFactor);
+		this.facesList = detectEyes(thumbImage);
+
+		// detect overlapping rectangles
+		facesList = removeOverlappingRectangles(facesList);
+		log.debug("Rectangles after filter: " + facesList.size());
+
+		for (Rectangle rectangle : facesList) {
+			// extract all the eyes from the original image using the
+			// generated faces
+			BufferedImage extracted = ImageUtil.cropImage(originalImage, (int) (rectangle.x / scaleFactor), (int) (rectangle.y / scaleFactor), (int) (rectangle.width / scaleFactor),
+					(int) (rectangle.height / scaleFactor));
+
+			extracted = getEyesChange(extracted, newColor);
+			if (extracted != null) {
+				// tengo los ojos pintados, combinar con la original
+				log.debug("Extracted eye, paint it");
+				originalImage = ImageUtil.combineImages(originalImage, extracted, (int) (rectangle.x / scaleFactor), (int) (rectangle.y / scaleFactor));
+			}
+		}
+		return originalImage;
 	}
 
-	public void setScaleFactor(double scaleFactor) {
-		this.scaleFactor = scaleFactor;
-	}
-
+	/**
+	 * Changes the eyes color of the image passed
+	 * 
+	 * @param originalImage
+	 * @param newColor
+	 * @return
+	 */
 	public BufferedImage getEyesChange(BufferedImage originalImage, Color newColor) {
 		BufferedImage thumbImage;
 		// prepare image
