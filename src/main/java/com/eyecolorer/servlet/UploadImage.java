@@ -54,7 +54,7 @@ public class UploadImage extends HttpServlet {
 
 			BufferedImage bi = ImageIO.read(file);
 			EyeDetector eyeDetector = new EyeDetector();
-			if (multiface.equals("true")) {
+			if (multiface != null && multiface.equals("true")) {
 				bi = eyeDetector.getEyesChangeMultiFace(bi, eyeColor);
 			} else {
 				bi = eyeDetector.getEyesChange(bi, eyeColor);
