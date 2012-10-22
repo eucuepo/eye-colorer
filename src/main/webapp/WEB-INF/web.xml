@@ -18,6 +18,14 @@
 		<url-pattern>/UploadImage</url-pattern>
 	</servlet-mapping>
 	<servlet>
+		<servlet-name>convert</servlet-name>
+		<servlet-class>com.eyecolorer.servlet.ConvertImage</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>convert</servlet-name>
+		<url-pattern>/ConvertImage</url-pattern>
+	</servlet-mapping>
+	<servlet>
 		<servlet-name>getImage</servlet-name>
 		<servlet-class>com.eyecolorer.servlet.GetImage</servlet-class>
 	</servlet>

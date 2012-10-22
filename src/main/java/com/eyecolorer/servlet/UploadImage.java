@@ -75,7 +75,7 @@ public class UploadImage extends HttpServlet {
 			out.close();
 
 		} catch (Exception e) {
-			log.debug("Error during eye coloring");
+			log.debug("Error during eye coloring"+e.getMessage());
 		}
 	}
 	// }
