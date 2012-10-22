@@ -33,6 +33,14 @@ public class EyeDetector {
 	public void setEyesList(List<Rectangle> eyesList) {
 		this.eyesList = eyesList;
 	}
+	
+	public double getScaleFactor() {
+		return scaleFactor;
+	}
+
+	public void setScaleFactor(double scaleFactor) {
+		this.scaleFactor = scaleFactor;
+	}
 
 	public BufferedImage getEyesChangeMultiFace(BufferedImage originalImage, Color newColor) {
 		BufferedImage thumbImage;
