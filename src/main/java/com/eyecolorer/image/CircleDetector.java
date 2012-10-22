@@ -17,10 +17,13 @@ import jipfunc.FGrayToGray;
 import jipfunc.FHoughCirc;
 import jiputil.Circunferencia;
 
+import org.apache.log4j.Logger;
+
 import com.eyecolorer.image.functions.SmoothMedian;
 
 public class CircleDetector {
 
+	private static Logger log = Logger.getLogger(CircleDetector.class.getName());
 	// constants for the detection
 	private static final int SMOOTH_RADIUS = 2;
 	private static final float CANNY_SIGMA = 1.0f;
@@ -28,6 +31,13 @@ public class CircleDetector {
 	private static final int BINARIZE_LOW_THRESHOLD = 25;
 	private static final int BINARIZE_HIGH_THRESHOLD = 255;
 
+	/**
+	 * Get a list of circles detected in an image. The parameters are tweaked
+	 * for iris and pupil detection
+	 * 
+	 * @param bi
+	 * @return
+	 */
 	public static List<Circle> getEyeCandidates(BufferedImage bi) {
 		JIPImage jipImage = JIPToolkit.getColorImage(bi);
 
@@ -35,7 +45,7 @@ public class CircleDetector {
 		smoothMedian.setRadius(SMOOTH_RADIUS);
 		JIPImage imgFiltroMediania = smoothMedian.processImg(jipImage);
 
-		// TODO: Wrapper de canny
+		// TODO: Wrapper the canny
 		FCanny fCanny = new FCanny();
 		fCanny.setParamValue("sigma", CANNY_SIGMA);
 		fCanny.setParamValue("brightness", CANNY_BRIGHTNESS);
@@ -49,27 +59,45 @@ public class CircleDetector {
 		fBinarize.setParamValue("u1", BINARIZE_LOW_THRESHOLD);
 		fBinarize.setParamValue("u2", BINARIZE_HIGH_THRESHOLD);
 		JIPImage imgBinarize = fBinarize.processImg(imageGray);
-		List<Circle> listaCirculos = performPass(imgBinarize, 0, 30, 20, 70);
-		System.out.println("Numero de circulos antes de filtros: "
-				+ listaCirculos.size());
-		for (int i = 0; i < listaCirculos.size(); i++) {
-			Circle c = listaCirculos.get(i);
-			System.out.println("circunferencia " + i + ": centro X: "
-					+ c.getCenterX() + " centroY: " + c.getCenterY()
-					+ " radio: " + c.getRadius());
-		}
-		if (listaCirculos.size() == 0) {
+		List<Circle> circleClist = performPass(imgBinarize, 0, 30, 20, 70);
+
+		if (circleClist.size() == 0) {
 			// no circles found, let's do another pass with more relaxed args
-			listaCirculos = performPass(imgBinarize, 50, 28, 20, 60);
+			circleClist = performPass(imgBinarize, 50, 28, 20, 60);
 
 		}
-
-		return listaCirculos;
+		log.debug(printCircles(circleClist));
+		return circleClist;
 	}
 
+	/**
+	 * Used for debugging purposes. Return a string with the list of circles
+	 * 
+	 * @return
+	 */
+	private static String printCircles(List<Circle> circleList) {
+		String result;
+		result = "Circles before filter: " + circleList.size();
+		for (int i = 0; i < circleList.size(); i++) {
+			Circle c = circleList.get(i);
+			result += "circle" + i + ": center X: " + c.getCenterX() + " center Y: " + c.getCenterY() + " radius: " + c.getRadius() + "\n";
+		}
+		return result;
+	}
+
+	/**
+	 * Performs a pass looking for circles in a binary image with the selected
+	 * parameters
+	 * 
+	 * @param imgBinarize
+	 * @param cropping
+	 * @param houghThreshold
+	 * @param houghMinRadius
+	 * @param houghMaxRadius
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
-	private static List<Circle> performPass(JIPImage imgBinarize, int cropping,
-			int houghThreshold, int houghMinRadius, int houghMaxRadius) {
+	private static List<Circle> performPass(JIPImage imgBinarize, int cropping, int houghThreshold, int houghMinRadius, int houghMaxRadius) {
 		Vector<Circunferencia> vecAux;
 		// crop the image to the center
 		FCrop fCrop = new FCrop();
@@ -85,25 +113,26 @@ public class CircleDetector {
 		fHoughCirc.setParamValue("Rmin", houghMinRadius);
 		fHoughCirc.setParamValue("Rmax", houghMaxRadius);
 		fHoughCirc.processImg(imgBinarize);
-		vecAux = (Vector<Circunferencia>) fHoughCirc
-				.getResultValueObj("circum");
+		vecAux = (Vector<Circunferencia>) fHoughCirc.getResultValueObj("circum");
 		List<Circle> listaCirculos = new ArrayList<Circle>();
 		for (Circunferencia circunferencia : vecAux) {
-			Circle c = new Circle(circunferencia.centroX + cropping,
-					circunferencia.centroY + cropping, circunferencia.radio);
+			Circle c = new Circle(circunferencia.centroX + cropping, circunferencia.centroY + cropping, circunferencia.radio);
 			listaCirculos.add(c);
 		}
 		return listaCirculos;
 	}
 
 	@SuppressWarnings("unused")
-	private static BufferedImage calculateImageBuffer(JIPImage imgBinarize,
-			double scaleFactor) {
+	/**
+	 * This is used for debug purposes. It generates an image from a binarized image
+	 * @param imgBinarize
+	 * @param scaleFactor
+	 * @return
+	 */
+	private static BufferedImage calculateImageBuffer(JIPImage imgBinarize, double scaleFactor) {
 		// no eyes found, return image
 		Image binary = JIPToolkit.getAWTImage(imgBinarize);
-		BufferedImage imageBuff = new BufferedImage(
-				(int) (binary.getWidth(null)), (int) (binary.getHeight(null)),
-				BufferedImage.TYPE_INT_RGB);
+		BufferedImage imageBuff = new BufferedImage((int) (binary.getWidth(null)), (int) (binary.getHeight(null)), BufferedImage.TYPE_INT_RGB);
 
 		Graphics g = imageBuff.createGraphics();
 		g.drawImage(binary, 0, 0, new Color(0, 0, 0), null);

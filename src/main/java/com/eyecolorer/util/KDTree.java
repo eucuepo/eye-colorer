@@ -6,6 +6,12 @@ import java.util.List;
 
 import com.eyecolorer.image.Circle;
 
+/**
+ * Implementation of the K-D-Tree algorithm http://en.wikipedia.org/wiki/K-d_tree
+ * Used to look for the closest circles (iris and pupil center) in a circle vector
+ * @author ecuevas
+ *
+ */
 public class KDTree {
 	// 2D k-d tree
 	private KDTree childA, childB;
@@ -35,6 +41,11 @@ public class KDTree {
 		}
 	}
 
+	/**
+	 * Find closest circle given another
+	 * @param target
+	 * @return
+	 */
 	public Circle findClosest(Circle target) {
 		Circle closest = point.equalsPoint(target) ? Circle.INFINITY : point;
 		double bestDist = closest.distance(target);

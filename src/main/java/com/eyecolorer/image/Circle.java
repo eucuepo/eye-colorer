@@ -9,6 +9,13 @@ import org.apache.log4j.Logger;
 
 import com.eyecolorer.util.KDTree;
 
+/**
+ * Class that models a circle to be used in detection algorithms A circle is
+ * defined by its center coordinates and the radius
+ * 
+ * @author ecuevas
+ * 
+ */
 public class Circle {
 
 	private static Logger log = Logger.getLogger(Circle.class.getName());
@@ -16,8 +23,7 @@ public class Circle {
 	private int centerX;
 	private int centerY;
 	private int radius;
-	public static final Circle INFINITY = new Circle(Integer.MAX_VALUE,
-			Integer.MAX_VALUE, 0);
+	public static final Circle INFINITY = new Circle(Integer.MAX_VALUE, Integer.MAX_VALUE, 0);
 
 	public int[] coord; // coord[0] = x, coord[1] = y
 
@@ -66,7 +72,9 @@ public class Circle {
 	 * Checks if b is inside a
 	 * 
 	 * @param a
+	 *            Circle
 	 * @param b
+	 *            Circle
 	 * @return
 	 */
 	private static boolean isCircleInCircle(Circle a, Circle b) {
@@ -79,13 +87,7 @@ public class Circle {
 		return radiusDifference * radiusDifference > centreDistanceSquared;
 	}
 
-	public static double distanceTo(Circle a, Circle b) {
-		return Math.sqrt((a.centerX - b.centerX) * (a.centerX - b.centerX)
-				+ (a.centerY - b.centerY) * (a.centerY - b.centerY));
-	}
-
-	public static List<Circle> getConcentricCircunferencia(
-			List<Circle> circleList) {
+	public static List<Circle> getConcentricCircunferencia(List<Circle> circleList) {
 		if (circleList.size() == 1) {
 			return circleList;
 		}
@@ -94,8 +96,7 @@ public class Circle {
 		for (Circle circle : circleList) {
 			for (Circle toCheck : circleList) {
 				// if the circles are not the same and one is inside another,
-				if (!toCheck.equals(circle)
-						&& isCircleInCircle(circle, toCheck)) {
+				if (!toCheck.equals(circle) && isCircleInCircle(circle, toCheck)) {
 					// if they are not intersected
 					toReturn.add(circle);
 					toReturn.add(toCheck);
@@ -108,29 +109,34 @@ public class Circle {
 	}
 
 	/**
-	 * Get the closest centers
+	 * Algorithm used to get the closest centers in a list of circles The two
+	 * closest are supposed to be iris an pupil
+	 * 
+	 * @param points
+	 * @return
 	 */
 	public static Circle[] getClosestCenters(List<Circle> points) {
 		Circle[] eye = new Circle[2];
 
 		// only 2, perfect match
 		if (points.size() == 2) {
-			eye[1] = points.get(0).getRadius() > points.get(1).getRadius() ? points
-					.get(0) : points.get(1);
-			eye[0] = points.get(0).getRadius() <= points.get(1).getRadius() ? points
-					.get(0) : points.get(1);
+			eye[1] = points.get(0).getRadius() > points.get(1).getRadius() ? points.get(0) : points.get(1);
+			eye[0] = points.get(0).getRadius() <= points.get(1).getRadius() ? points.get(0) : points.get(1);
 			return eye;
 		}
 		double distance = Double.POSITIVE_INFINITY;
 
 		Circle[] closest = new Circle[points.size()];
 
-		KDTree tree = new KDTree(points, 0); // WILL MODIFY 'points'
+		// init the KDTree
+		KDTree tree = new KDTree(points, 0);
 
+		// find the closest to each circle
 		for (int i = 0; i < points.size(); i++) {
 			closest[i] = tree.findClosest(points.get(i));
 		}
 
+		// get the two closest
 		for (int i = 0; i < points.size(); i++) {
 			double calculatedDistance = points.get(i).distance(closest[i]);
 			if (calculatedDistance < distance) {
@@ -145,26 +151,45 @@ public class Circle {
 				}
 			}
 
-			log.debug(points.get(i) + " is closest to " + closest[i]
-					+ " the distance is" + calculatedDistance);
+			log.debug(points.get(i) + " is closest to " + closest[i] + " the distance is" + calculatedDistance);
 		}
 		return eye;
 	}
 
+	/**
+	 * Gets the distance between this circle and the circle provided
+	 * 
+	 * @param p
+	 *            The circle to compare
+	 * @return
+	 */
 	public double distance(Circle p) {
 		double dX = getX() - p.getX();
 		double dY = getY() - p.getY();
 		return Math.sqrt(dX * dX + dY * dY);
 	}
 
+	/**
+	 * Check if two points are the same
+	 * 
+	 * @param p
+	 * @return
+	 */
 	public boolean equalsPoint(Circle p) {
 		return (getX() == p.getX()) && (getY() == p.getY());
 	}
 
+	/**
+	 * String representation of the circle
+	 */
 	public String toString() {
 		return "(" + getX() + ", " + getY() + " , " + radius + ")";
 	}
 
+	/**
+	 * Comparator class that compares circles
+	 * 
+	 */
 	public static class PointComp implements Comparator<Circle> {
 		int d; // the dimension to compare in (0 => x, 1 => y)
 

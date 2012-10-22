@@ -16,23 +16,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.apache.log4j.Logger;
+
 import com.eyecolorer.image.EyeDetector;
 import com.eyecolorer.image.ImageUtil;
 
+/**
+ * Servlet to change eye color of images and return the path to the generated
+ * image
+ * 
+ * @author ecuevas
+ * 
+ */
 @MultipartConfig
 public class UploadImage extends HttpServlet {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8414206228109706371L;
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		System.out.println("request: " + request);
+	private static final long serialVersionUID = -8414206228109706371L;
+	private static Logger log = Logger.getLogger(UploadImage.class.getName());
+
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String color = request.getParameter("color"); // Retrieves <input
 														// type="text"
-														// name="description">
+														// name="color">
 		Part filePart = request.getPart("image"); // Retrieves <input
 													// type="file"
 													// name="file">
@@ -50,8 +56,7 @@ public class UploadImage extends HttpServlet {
 			bi = eyeDetector.getEyesChange(bi, eyeColor);
 
 			// resize to width 800
-			BufferedImage toSave = ImageUtil.scaleImage(bi,
-					ImageUtil.getScaleFactor(800, bi));
+			BufferedImage toSave = ImageUtil.scaleImage(bi, ImageUtil.getScaleFactor(800, bi));
 
 			// convert to JPG
 			toSave = ImageUtil.convertToJpg(toSave);
@@ -66,7 +71,7 @@ public class UploadImage extends HttpServlet {
 			out.close();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug("Error during eye coloring");
 		}
 	}
 	// }

@@ -14,6 +14,12 @@ import java.awt.image.BufferedImage;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Implements functions for image processing like cropping or scaling
+ * 
+ * @author ecuevas
+ * 
+ */
 public class ImageUtil {
 
 	private static Logger log = Logger.getLogger(ImageUtil.class.getName());
@@ -36,34 +42,20 @@ public class ImageUtil {
 	 * @param eyeColor
 	 * @return A buffered image containing the mask
 	 */
-	public static BufferedImage createEyeMask(int imageWidth, int imageHeight,
-			int innerRadius, int outerRadius, int posX, int posY,
-			int pupilPosX, int pupilPosY, Color eyeColor) {
+	public static BufferedImage createEyeMask(int imageWidth, int imageHeight, int innerRadius, int outerRadius, int posX, int posY, int pupilPosX, int pupilPosY, Color eyeColor) {
 		// get the eye shape
-		Shape eye = generateEye(posX, posY, pupilPosX, pupilPosY, innerRadius,
-				outerRadius);
-		BufferedImage mask = new BufferedImage(imageWidth, imageHeight,
-				BufferedImage.TYPE_INT_ARGB);
+		Shape eye = generateEye(posX, posY, pupilPosX, pupilPosY, innerRadius, outerRadius);
+		BufferedImage mask = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = mask.createGraphics();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		// Set the eye color
 		// Create and set a RadialGradient centered on the eye to outside
-		Color[] colors = {
-				new Color(eyeColor.getRed(), eyeColor.getGreen(),
-						eyeColor.getBlue(), 10),
-				new Color(eyeColor.getRed(), eyeColor.getGreen(),
-						eyeColor.getBlue(), 60),
-				new Color(eyeColor.getRed(), eyeColor.getGreen(),
-						eyeColor.getBlue(), 60),
-				new Color(eyeColor.getRed(), eyeColor.getGreen(),
-						eyeColor.getBlue(), 0) };
-		Point2D center = new Point2D.Float(pupilPosX + (innerRadius / 2),
-				pupilPosY + (innerRadius / 2));
+		Color[] colors = { new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 10), new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 60),
+				new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 60), new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 0) };
+		Point2D center = new Point2D.Float(pupilPosX + (innerRadius / 2), pupilPosY + (innerRadius / 2));
 		float[] dist = { .15f, .25f, .8f, .9f };
-		RadialGradientPaint radialPaint = new RadialGradientPaint(center,
-				outerRadius, dist, colors);
+		RadialGradientPaint radialPaint = new RadialGradientPaint(center, outerRadius, dist, colors);
 		// g2d.setPaint(paint);
 		// Color paint = new Color(eyeColor.getRed(), eyeColor.getGreen(),
 		// eyeColor.getBlue(), 60);
@@ -90,15 +82,12 @@ public class ImageUtil {
 	 *            outer radius of the circle
 	 * @return
 	 */
-	private static Shape generateEye(double x, double y, double pupilPosX,
-			double pupilPosY, double innerRadius, double outerRadius) {
+	private static Shape generateEye(double x, double y, double pupilPosX, double pupilPosY, double innerRadius, double outerRadius) {
 		// create iris circle
-		Area iris = new Area(new Ellipse2D.Double(x, y, outerRadius,
-				outerRadius));
+		Area iris = new Area(new Ellipse2D.Double(x, y, outerRadius, outerRadius));
 		// double innerOffset = (outerRadius - innerRadius) / 2;
 		// create pupil circle
-		Area pupil = new Area(new Ellipse2D.Double(pupilPosX, pupilPosY,
-				innerRadius, innerRadius));
+		Area pupil = new Area(new Ellipse2D.Double(pupilPosX, pupilPosY, innerRadius, innerRadius));
 		// substract pupil
 		iris.subtract(pupil);
 		return iris;
@@ -114,14 +103,12 @@ public class ImageUtil {
 	 *            top image
 	 * @return
 	 */
-	public static BufferedImage combineImages(BufferedImage image,
-			BufferedImage overlay) {
+	public static BufferedImage combineImages(BufferedImage image, BufferedImage overlay) {
 
 		// create the new image, canvas size is the max. of both image sizes
 		int w = Math.max(image.getWidth(), overlay.getWidth());
 		int h = Math.max(image.getHeight(), overlay.getHeight());
-		BufferedImage combined = new BufferedImage(w, h,
-				BufferedImage.TYPE_INT_ARGB);
+		BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 
 		// paint both images, preserving the alpha channels
 		Graphics g = combined.getGraphics();
@@ -132,19 +119,26 @@ public class ImageUtil {
 		return combined;
 	}
 
-	public static BufferedImage combineImages(BufferedImage image,
-			BufferedImage overlay, int overlayX, int overlayY) {
+	/**
+	 * Combine two images into one. The first image will be overlapped by the
+	 * second one, starting with the overlay coordinates
+	 * 
+	 * @param image
+	 * @param overlay
+	 * @param overlayX
+	 * @param overlayY
+	 * @return
+	 */
+	public static BufferedImage combineImages(BufferedImage image, BufferedImage overlay, int overlayX, int overlayY) {
 
-		BufferedImage combined = new BufferedImage(image.getWidth(),
-				image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		BufferedImage combined = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
 		// paint both images, preserving the alpha channels
 		Graphics g = combined.getGraphics();
 		g.drawImage(image, 0, 0, null);
 		g.drawImage(overlay, overlayX, overlayY, null);
 
-		log.debug("Combining images: overlayX" + overlayX + " overlayY:"
-				+ overlayY);
+		log.debug("Combining images: overlayX" + overlayX + " overlayY:" + overlayY);
 		// Save as new image
 		return combined;
 	}
@@ -164,8 +158,7 @@ public class ImageUtil {
 	 *            The height of the rectangle
 	 * @return
 	 */
-	public static BufferedImage cropImage(BufferedImage image, int topX,
-			int topY, int width, int height) {
+	public static BufferedImage cropImage(BufferedImage image, int topX, int topY, int width, int height) {
 		// create cropping rectangle
 		BufferedImage dest = image.getSubimage(topX, topY, width, height);
 		// return cropped image
@@ -182,28 +175,37 @@ public class ImageUtil {
 
 	}
 
+	/**
+	 * Scales an image aplying the scalefactor provided
+	 * 
+	 * @param img
+	 *            The image to scale
+	 * @param scaleFactor
+	 *            the factor to scale. For example, 0.5 means half.
+	 * @return The scaled image
+	 */
 	public static BufferedImage scaleImage(BufferedImage img, double scaleFactor) {
 		double oldHeight = img.getHeight();
 		double oldWidth = img.getWidth();
-		System.out.println("Factor de escala: " + scaleFactor);
-		System.out.println("Escalando imagen: Tamaño original:"
-				+ img.getWidth() + "x" + img.getHeight() + ". Nuevo tamaño: "
-				+ (int) (oldWidth * scaleFactor) + "x"
-				+ (int) (oldHeight * scaleFactor));
-		Image scaledImage = img.getScaledInstance(
-				(int) (oldWidth * scaleFactor),
-				(int) (oldHeight * scaleFactor), Image.SCALE_SMOOTH);
-		BufferedImage imageBuff = new BufferedImage(
-				(int) (oldWidth * scaleFactor),
-				(int) (oldHeight * scaleFactor), BufferedImage.TYPE_INT_RGB);
+		log.debug("Scale factor: " + scaleFactor);
+		log.debug("Scaling image: original size:" + img.getWidth() + "x" + img.getHeight() + ". New size: " + (int) (oldWidth * scaleFactor) + "x" + (int) (oldHeight * scaleFactor));
+		Image scaledImage = img.getScaledInstance((int) (oldWidth * scaleFactor), (int) (oldHeight * scaleFactor), Image.SCALE_SMOOTH);
+		BufferedImage imageBuff = new BufferedImage((int) (oldWidth * scaleFactor), (int) (oldHeight * scaleFactor), BufferedImage.TYPE_INT_RGB);
 		Graphics g = imageBuff.createGraphics();
 		g.drawImage(scaledImage, 0, 0, new Color(0, 0, 0), null);
 		g.dispose();
 		return imageBuff;
 	}
 
-	public static BufferedImage applyGrayscaleMaskToAlpha(BufferedImage image,
-			BufferedImage mask) {
+	/**
+	 * Applies a grayscale mask to an image, returning just the pixels that
+	 * intersect with the mask
+	 * 
+	 * @param image
+	 * @param mask
+	 * @return
+	 */
+	public static BufferedImage applyGrayscaleMaskToAlpha(BufferedImage image, BufferedImage mask) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 
@@ -221,11 +223,18 @@ public class ImageUtil {
 		return image;
 	}
 
+	/**
+	 * Converts a buffered image with an alpha channel to a jpg-ready non-alpha
+	 * image
+	 * 
+	 * @param image
+	 *            the image to convert
+	 * @return the image without the alpha channel
+	 */
 	public static BufferedImage convertToJpg(BufferedImage image) {
 		int w = image.getWidth();
 		int h = image.getHeight();
-		BufferedImage image2 = new BufferedImage(w, h,
-				BufferedImage.TYPE_INT_RGB);
+		BufferedImage image2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = image2.createGraphics();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, w, h);

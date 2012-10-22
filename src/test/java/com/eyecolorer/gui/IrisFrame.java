@@ -100,7 +100,6 @@ public class IrisFrame extends javax.swing.JFrame {
 		ch.setVisible(true);
 
 		String file = ch.getDirectory() + ch.getFile();
-		System.out.println(file);
 		f = new File(file);
 		try {
 			img = ImageIO.read(f);
@@ -113,7 +112,6 @@ public class IrisFrame extends javax.swing.JFrame {
 			File outputFile = new File("C:/result.png");
 			ImageIO.write(img, "PNG", outputFile);
 
-			// System.out.println("Numero de circulos: " +
 			// fHougCir.getResultValueInt("ncirc"));
 			// Vector vecAux = (Vector) fHougCir.getResultValueObj("circum");
 			// Graphics2D g2d = (Graphics2D) jLabel1.getGraphics();

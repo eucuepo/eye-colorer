@@ -12,22 +12,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Servlet to return an image from the temporary directory
+ * 
+ * @author ecuevas
+ * 
+ */
 public class GetImage extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String filename = URLDecoder.decode(request.getPathInfo(), "UTF-8");
+		// get the file from temp path
 		File file = new File("/tmp", filename);
 
 		response.setContentType(getServletContext().getMimeType(file.getName()));
 		response.setContentLength((int) file.length());
-		response.setHeader("Content-Disposition",
-				"inline; filename=\"" + file.getName() + "\"");
+		response.setHeader("Content-Disposition", "inline; filename=\"" + file.getName() + "\"");
 
 		BufferedInputStream input = null;
 		BufferedOutputStream output = null;

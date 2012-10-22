@@ -10,53 +10,61 @@ public class EyeColorer {
 
 	private static Logger log = Logger.getLogger(EyeColorer.class.getName());
 
-	public BufferedImage changeEyeColor(Color eyeColor,
-			BufferedImage toChange) {
+	/**
+	 * Changes the color of the eye of the image provided
+	 * 
+	 * @param eyeColor
+	 *            The RGB Color to change to
+	 * @param toChange
+	 *            The image of the eye
+	 * @return
+	 */
+	public BufferedImage changeEyeColor(Color eyeColor, BufferedImage toChange) {
+		// Scale the original image for processing
 		double scaleFactor = ImageUtil.getScaleFactor(300, toChange);
 		BufferedImage bi = ImageUtil.scaleImage(toChange, scaleFactor);
 
-		List<Circle> listaCirculos = CircleDetector.getEyeCandidates(bi);
+		// detect the circles
+		List<Circle> circleList = CircleDetector.getEyeCandidates(bi);
 
-		if (listaCirculos.size() > 0 && listaCirculos.get(0) != null) {
-
-			Circle pupil = new Circle(listaCirculos.get(0).getX(),
-					listaCirculos.get(0).getY() + 1, listaCirculos.get(0)
-							.getRadius() / 3);
-			log.debug("Adding pupil: " + pupil);
-			listaCirculos.add(pupil);
-		}
-		listaCirculos = Circle.getConcentricCircunferencia(listaCirculos);
-
-		if (listaCirculos.size() < 2) {
+		// no circles detected, end processing
+		if (circleList.size() == 0) {
 			return null;
 		}
 
-		Circle[] eye = Circle.getClosestCenters(listaCirculos);
+		if (circleList.size() > 0 && circleList.get(0) != null) {
+			// If the pupil has not been detected, calculate it to 1/3 of the
+			// iris radius
+			Circle pupil = new Circle(circleList.get(0).getX(), circleList.get(0).getY() + 1, circleList.get(0).getRadius() / 3);
+			log.debug("Adding pupil: " + pupil);
+			circleList.add(pupil);
+		}
+		// filter circles that doesn't intersect with another
+		circleList = Circle.getConcentricCircunferencia(circleList);
 
-		log.debug("Number of circles after filters: " + listaCirculos.size());
+		// No circles detected return null
+		if (circleList.size() < 2) {
+			return null;
+		}
+
+		// look for the closest centers, that would be the pupil and iris
+		Circle[] eye = Circle.getClosestCenters(circleList);
+
+		log.debug("Number of circles after filters: " + circleList.size());
 
 		BufferedImage eyeImage;
 		if (eye[0] == null || eye[1] == null) {
 			return null;
 		} else {
-			log.debug("iris" + ": centro X: " + eye[1].getX() + " centroY: "
-					+ eye[1].getY() + " radio: " + eye[1].getRadius());
-			log.debug("pupila" + ": centro X: " + eye[0].getX() + " centroY: "
-					+ eye[0].getY() + " radio: " + eye[0].getRadius());
-			eyeImage = ImageUtil.createEyeMask(
-					(int) (bi.getWidth() / scaleFactor),
-					(int) (bi.getHeight() / scaleFactor),
-					(int) (eye[0].getRadius() * 2 / scaleFactor),
-					(int) (eye[1].getRadius() * 2 / scaleFactor),
-					(int) ((eye[1].getX() - eye[1].getRadius()) / scaleFactor),
-					(int) ((eye[1].getY() - eye[1].getRadius()) / scaleFactor),
-					(int) ((eye[0].getX() - eye[0].getRadius()) / scaleFactor),
-					(int) ((eye[0].getY() - eye[0].getRadius()) / scaleFactor),
-					eyeColor);
+			// print the eyes to a mask
+			log.debug("pupil: " + eye[0].toString());
+			log.debug("iris: " + eye[1].toString());
+			eyeImage = ImageUtil.createEyeMask((int) (bi.getWidth() / scaleFactor), (int) (bi.getHeight() / scaleFactor), (int) (eye[0].getRadius() * 2 / scaleFactor),
+					(int) (eye[1].getRadius() * 2 / scaleFactor), (int) ((eye[1].getX() - eye[1].getRadius()) / scaleFactor), (int) ((eye[1].getY() - eye[1].getRadius()) / scaleFactor),
+					(int) ((eye[0].getX() - eye[0].getRadius()) / scaleFactor), (int) ((eye[0].getY() - eye[0].getRadius()) / scaleFactor), eyeColor);
 		}
 		// mix the original image and the masks
-		BufferedImage masked = ImageUtil.combineImages(toChange, eyeImage);
-		return masked;
+		return ImageUtil.combineImages(toChange, eyeImage);
 
 	}
 }

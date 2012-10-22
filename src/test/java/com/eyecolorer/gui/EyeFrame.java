@@ -148,7 +148,6 @@ public class EyeFrame extends javax.swing.JFrame {
 			if (img == null)
 				return;
 			Dimension dim = getSize();
-			// System.out.println("véridique");
 			g1.clearRect(0, 0, dim.width, dim.height);
 			double scale_x = dim.width * 1.f / img_width;
 			double scale_y = dim.height * 1.f / img_height;
