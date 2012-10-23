@@ -12,7 +12,7 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-import com.eyecolorer.image.EyeColorer;
+import com.eyecolorer.filters.OneColorFilter;
 
 @SuppressWarnings("serial")
 public class IrisFrame extends javax.swing.JFrame {
@@ -102,7 +102,7 @@ public class IrisFrame extends javax.swing.JFrame {
 		f = new File(file);
 		try {
 			img = ImageIO.read(f);
-			EyeColorer eyeColorer = new EyeColorer();
+			OneColorFilter eyeColorer = new OneColorFilter();
 			img = eyeColorer.changeEyeColor(new Color(255, 0, 0), new Color(0, 255, 0), img);
 			dp.setBi(img);
 

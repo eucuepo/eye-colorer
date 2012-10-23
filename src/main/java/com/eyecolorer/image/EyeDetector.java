@@ -11,6 +11,8 @@ import jviolajones.Detector;
 
 import org.apache.log4j.Logger;
 
+import com.eyecolorer.filters.OneColorFilter;
+
 /**
  * Changes the eye color of an image of the face
  * 
@@ -122,7 +124,7 @@ public class EyeDetector {
 			// generated faces
 			BufferedImage extracted = ImageUtil.cropImage(originalImage, (int) (rectangle.x / scaleFactor), (int) (rectangle.y / scaleFactor), (int) (rectangle.width / scaleFactor),
 					(int) (rectangle.height / scaleFactor));
-			EyeColorer eyeColorer = new EyeColorer();
+			OneColorFilter eyeColorer = new OneColorFilter();
 			extracted = eyeColorer.changeEyeColor(firstColor, firstColor, extracted);
 			if (extracted != null) {
 				// tengo el ojo pintado, combinar con la original

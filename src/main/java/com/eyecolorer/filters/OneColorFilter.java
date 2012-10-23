@@ -1,4 +1,4 @@
-package com.eyecolorer.image;
+package com.eyecolorer.filters;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -6,9 +6,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class EyeColorer {
+import com.eyecolorer.image.Circle;
+import com.eyecolorer.image.CircleDetector;
+import com.eyecolorer.image.ImageUtil;
 
-	private static Logger log = Logger.getLogger(EyeColorer.class.getName());
+public class OneColorFilter implements EyeFilter {
+
+	private static Logger log = Logger.getLogger(OneColorFilter.class.getName());
 
 	/**
 	 * Changes the color of the eye of the image provided
@@ -66,5 +70,10 @@ public class EyeColorer {
 		// mix the original image and the masks
 		return ImageUtil.combineImages(toChange, eyeImage);
 
+	}
+
+	public BufferedImage changeEyeColor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
