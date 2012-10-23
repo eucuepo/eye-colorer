@@ -4,21 +4,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import jip.JIPImage;
 import jip.JIPToolkit;
-import jipfunc.FBinarize;
-import jipfunc.FCanny;
-import jipfunc.FCrop;
-import jipfunc.FGrayToGray;
-import jipfunc.FHoughCirc;
 import jiputil.Circunferencia;
 
 import org.apache.log4j.Logger;
 
+import com.eyecolorer.image.functions.Binarize;
+import com.eyecolorer.image.functions.Canny;
+import com.eyecolorer.image.functions.Crop;
+import com.eyecolorer.image.functions.GrayToGray;
+import com.eyecolorer.image.functions.HoughCirc;
 import com.eyecolorer.image.functions.SmoothMedian;
 
 public class CircleDetector {
@@ -43,31 +42,59 @@ public class CircleDetector {
 
 		SmoothMedian smoothMedian = new SmoothMedian();
 		smoothMedian.setRadius(SMOOTH_RADIUS);
-		JIPImage imgFiltroMediania = smoothMedian.processImg(jipImage);
+		JIPImage imgFilterMedian = smoothMedian.processImg(jipImage);
 
-		// TODO: Wrapper the canny
-		FCanny fCanny = new FCanny();
-		fCanny.setParamValue("sigma", CANNY_SIGMA);
-		fCanny.setParamValue("brightness", CANNY_BRIGHTNESS);
-		JIPImage imgCanny = fCanny.processImg(imgFiltroMediania);
+		// Canny edge detection
+		Canny canny = new Canny();
+		canny.setSigma(CANNY_SIGMA);
+		canny.setBrightness(CANNY_BRIGHTNESS);
+		JIPImage imgCanny = canny.processImg(imgFilterMedian);
 
-		FGrayToGray fGrayToGray = new FGrayToGray();
-		JIPImage imageGray = fGrayToGray.processImg(imgCanny);
+		GrayToGray grayToGray = new GrayToGray();
+		JIPImage imageGray = grayToGray.processImg(imgCanny);
 
-		// TODO: Wrapper the binarize
-		FBinarize fBinarize = new FBinarize();
-		fBinarize.setParamValue("u1", BINARIZE_LOW_THRESHOLD);
-		fBinarize.setParamValue("u2", BINARIZE_HIGH_THRESHOLD);
-		JIPImage imgBinarize = fBinarize.processImg(imageGray);
+		// Binarize the image for circle detection
+		Binarize binarize = new Binarize();
+		binarize.setU1(BINARIZE_LOW_THRESHOLD);
+		binarize.setU2(BINARIZE_HIGH_THRESHOLD);
+		JIPImage imgBinarize = binarize.processImg(imageGray);
 		List<Circle> circleClist = performPass(imgBinarize, 0, 30, 20, 70);
 
 		if (circleClist.size() == 0) {
 			// no circles found, let's do another pass with more relaxed args
 			circleClist = performPass(imgBinarize, 50, 28, 20, 60);
-
 		}
 		log.debug(printCircles(circleClist));
 		return circleClist;
+	}
+
+	/**
+	 * Performs a pass looking for circles in a binary image with the selected
+	 * parameters
+	 * 
+	 * @param imgBinarize
+	 * @param cropping
+	 * @param houghThreshold
+	 * @param houghMinRadius
+	 * @param houghMaxRadius
+	 * @return
+	 */
+	private static List<Circle> performPass(JIPImage imgBinarize, int cropping, int houghThreshold, int houghMinRadius, int houghMaxRadius) {
+		// crop the image to the center
+		Crop crop = new Crop();
+		crop.setX(cropping);
+		crop.setY(cropping);
+		crop.setW(imgBinarize.getWidth() - cropping * 2);
+		crop.setH(imgBinarize.getHeight() - cropping * 2);
+		imgBinarize = crop.processImg(imgBinarize);
+
+		// detect circles
+		HoughCirc houghCirc = new HoughCirc();
+		houghCirc.setThreshold(houghThreshold);
+		houghCirc.setRmin(houghMinRadius);
+		houghCirc.setRmax(houghMaxRadius);
+		houghCirc.processImg(imgBinarize);
+		return houghCirc.getCircles(cropping);
 	}
 
 	/**
@@ -83,43 +110,6 @@ public class CircleDetector {
 			result += "circle" + i + ": center X: " + c.getCenterX() + " center Y: " + c.getCenterY() + " radius: " + c.getRadius() + "\n";
 		}
 		return result;
-	}
-
-	/**
-	 * Performs a pass looking for circles in a binary image with the selected
-	 * parameters
-	 * 
-	 * @param imgBinarize
-	 * @param cropping
-	 * @param houghThreshold
-	 * @param houghMinRadius
-	 * @param houghMaxRadius
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private static List<Circle> performPass(JIPImage imgBinarize, int cropping, int houghThreshold, int houghMinRadius, int houghMaxRadius) {
-		Vector<Circunferencia> vecAux;
-		// crop the image to the center
-		FCrop fCrop = new FCrop();
-		fCrop.setParamValue("x", cropping);
-		fCrop.setParamValue("y", cropping);
-		fCrop.setParamValue("w", imgBinarize.getWidth() - cropping * 2);
-		fCrop.setParamValue("h", imgBinarize.getHeight() - cropping * 2);
-		imgBinarize = fCrop.processImg(imgBinarize);
-		// try a second pass with lower threshold
-
-		FHoughCirc fHoughCirc = new FHoughCirc();
-		fHoughCirc.setParamValue("thres", houghThreshold);
-		fHoughCirc.setParamValue("Rmin", houghMinRadius);
-		fHoughCirc.setParamValue("Rmax", houghMaxRadius);
-		fHoughCirc.processImg(imgBinarize);
-		vecAux = (Vector<Circunferencia>) fHoughCirc.getResultValueObj("circum");
-		List<Circle> listaCirculos = new ArrayList<Circle>();
-		for (Circunferencia circunferencia : vecAux) {
-			Circle c = new Circle(circunferencia.centroX + cropping, circunferencia.centroY + cropping, circunferencia.radio);
-			listaCirculos.add(c);
-		}
-		return listaCirculos;
 	}
 
 	@SuppressWarnings("unused")

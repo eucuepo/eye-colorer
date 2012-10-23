@@ -6,8 +6,6 @@ import jipfunc.FSmoothMedian;
 /**
  * This is a wrapper for FSmoothMedian methods of JavaVIS library
  * 
- * @author ecuevas
- * 
  */
 public class SmoothMedian extends FSmoothMedian {
 
@@ -19,11 +17,13 @@ public class SmoothMedian extends FSmoothMedian {
 
 	public void setRadius(int radius) {
 		this.radius = radius;
+		super.setParamValue("radius", 2);
 	}
 
 	public SmoothMedian() {
 		// default values
 		this.radius = 2;
+		super.setParamValue("radius", 2);
 	}
 
 	public SmoothMedian(int radius) {
