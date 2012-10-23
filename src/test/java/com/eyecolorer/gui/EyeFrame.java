@@ -112,7 +112,9 @@ public class EyeFrame extends javax.swing.JFrame {
 			originalImage = ImageIO.read(f);
 
 			EyeDetector eyeDetector = new EyeDetector();
-			originalImage = eyeDetector.getEyesChange(originalImage, new Color(0, 0, 255, 80), new Color(0, 255, 0, 80));
+			eyeDetector.setFirstColor( new Color(255, 0, 0, 80));
+			eyeDetector.setSecondColor( new Color(0, 255, 0, 80));
+			originalImage = eyeDetector.getEyesChange(originalImage);
 
 			ImageViewer d = new ImageViewer(originalImage);
 			d.setRects(eyeDetector.getEyesList());

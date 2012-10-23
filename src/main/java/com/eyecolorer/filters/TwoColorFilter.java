@@ -20,7 +20,7 @@ public class TwoColorFilter extends ColorFilter {
 	public BufferedImage createEyeMask() {
 		return ImageUtil.createEyeMask((int) (scaledImage.getWidth() / scaleFactor), (int) (scaledImage.getHeight() / scaleFactor), (int) (eye[0].getRadius() * 2 / scaleFactor),
 				(int) (eye[1].getRadius() * 2 / scaleFactor), (int) ((eye[1].getX() - eye[1].getRadius()) / scaleFactor), (int) ((eye[1].getY() - eye[1].getRadius()) / scaleFactor),
-				(int) ((eye[0].getX() - eye[0].getRadius()) / scaleFactor), (int) ((eye[0].getY() - eye[0].getRadius()) / scaleFactor), firstColor, secondColor);
+				(int) ((eye[0].getX() - eye[0].getRadius()) / scaleFactor), (int) ((eye[0].getY() - eye[0].getRadius()) / scaleFactor), firstColor, secondColor,scaleFactor);
 	}
 
 }

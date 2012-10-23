@@ -60,6 +60,7 @@ public class CircleDetector {
 
 		if (circleClist.size() == 0) {
 			// no circles found, let's do another pass with more relaxed args
+			log.debug("Performing second pass");
 			circleClist = performPass(imgBinarize, 50, 28, 20, 60);
 		}
 		log.debug(printCircles(circleClist));

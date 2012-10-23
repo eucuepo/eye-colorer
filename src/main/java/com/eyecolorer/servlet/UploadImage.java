@@ -35,37 +35,60 @@ public class UploadImage extends HttpServlet {
 	private static final long serialVersionUID = -8414206228109706371L;
 	private static Logger log = Logger.getLogger(UploadImage.class.getName());
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-		String color = request.getParameter("color"); // Retrieves <input
-														// type="text"
-														// name="color">
+		// get the parameters from the request
+		String firstColorValue = request.getParameter("firstColor"); // Retrieves
+		// <input
+		// type="text"
+		// name="color">
+
+		String secondColorValue = request.getParameter("secondColor"); // Retrieves
+																		// <input
+		// type="text"
+		// name="color">
 		Part filePart = request.getPart("image"); // Retrieves <input
 													// type="file"
 													// name="file">
 		String multiface = request.getParameter("multiface");
+		String enableSecondColor = request.getParameter("secondColorEnabled");
+		String hipsterize = request.getParameter("hipsterize");
+
 		InputStream file = filePart.getInputStream();
 
-		Color eyeColor = new Color(Integer.parseInt(color, 16));
+		Color firstColor = new Color(Integer.parseInt(firstColorValue, 16));
+		Color secondColor = null;
+
+		secondColor = new Color(Integer.parseInt(secondColorValue, 16));
 
 		try {
 			response.setContentType("text/html");
 
 			BufferedImage bi = ImageIO.read(file);
 			EyeDetector eyeDetector = new EyeDetector();
+			eyeDetector.setFirstColor(firstColor);
+			if (enableSecondColor.equals("true")) {
+				eyeDetector.setSecondColor(secondColor);
+			}
+			if (hipsterize.equals("true")){
+				eyeDetector.setHipsterize(true);
+			}
 			if (multiface != null && multiface.equals("true")) {
-				bi = eyeDetector.getEyesChangeMultiFace(bi, eyeColor, eyeColor);
+				bi = eyeDetector.getEyesChangeMultiFace(bi);
 			} else {
-				bi = eyeDetector.getEyesChange(bi, eyeColor, eyeColor);
+				bi = eyeDetector.getEyesChange(bi);
 			}
 			// resize to width 800
-			BufferedImage toSave = ImageUtil.scaleImage(bi, ImageUtil.getScaleFactor(800, bi));
+			BufferedImage toSave = ImageUtil.scaleImage(bi,
+					ImageUtil.getScaleFactor(800, bi));
 
 			// Append the date to the image file to avoid conflicts
 			Date date = new Date();
 			// convert to JPG
 			toSave = ImageUtil.convertToJpg(toSave);
-			OutputStream out = new FileOutputStream("/tmp/image" + date.getTime() + ".jpg");
+			OutputStream out = new FileOutputStream("/tmp/image"
+					+ date.getTime() + ".jpg");
 			// return to webpage
 			ImageIO.write(toSave, "JPG", out);
 
@@ -76,6 +99,7 @@ public class UploadImage extends HttpServlet {
 
 		} catch (Exception e) {
 			log.debug("Error during eye coloring" + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	// }

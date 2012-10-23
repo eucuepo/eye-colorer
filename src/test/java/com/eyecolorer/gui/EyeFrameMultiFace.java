@@ -30,7 +30,8 @@ public class EyeFrameMultiFace extends javax.swing.JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 2553391688838747458L;
-	private static Logger log = Logger.getLogger(EyeFrameMultiFace.class.getName());
+	private static Logger log = Logger.getLogger(EyeFrameMultiFace.class
+			.getName());
 
 	private javax.swing.JButton jButton1;
 	private javax.swing.JMenu jMenu1;
@@ -65,7 +66,8 @@ public class EyeFrameMultiFace extends javax.swing.JFrame {
 		});
 
 		getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
-		jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.X_AXIS));
+		jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2,
+				javax.swing.BoxLayout.X_AXIS));
 
 		jPanel2.setPreferredSize(new java.awt.Dimension(460, 300));
 		jButton1.setText("Select image");
@@ -112,7 +114,10 @@ public class EyeFrameMultiFace extends javax.swing.JFrame {
 			originalImage = ImageIO.read(f);
 
 			EyeDetector eyeDetectorAux = new EyeDetector();
-			originalImage = eyeDetectorAux.getEyesChangeMultiFace(originalImage, new Color(0, 0, 255, 80), new Color(0, 255, 0, 80));
+			eyeDetectorAux.setFirstColor(new Color(255, 0, 0, 80));
+			eyeDetectorAux.setSecondColor(new Color(0, 255, 0, 80));
+			originalImage = eyeDetectorAux
+					.getEyesChangeMultiFace(originalImage);
 
 			ImageViewer d = new ImageViewer(originalImage);
 			d.setRects(eyeDetectorAux.getFacesList());
@@ -152,7 +157,8 @@ public class EyeFrameMultiFace extends javax.swing.JFrame {
 			double scale = Math.min(scale_x, scale_y);
 			int x_img = (dim.width - (int) (img_width * scale)) / 2;
 			int y_img = (dim.height - (int) (img_height * scale)) / 2;
-			g1.drawImage(img, x_img, y_img, (int) (img_width * scale), (int) (img_height * scale), null);
+			g1.drawImage(img, x_img, y_img, (int) (img_width * scale),
+					(int) (img_height * scale), null);
 			if (res == null)
 				return;
 

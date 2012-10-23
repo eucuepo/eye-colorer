@@ -14,21 +14,49 @@ public abstract class ColorFilter implements EyeFilter {
 	protected BufferedImage image;
 	protected BufferedImage scaledImage;
 	protected double scaleFactor;
+	protected double realScaleFactor;
 	protected Circle[] eye;
 
 	public ColorFilter(BufferedImage image) {
 		this.image = image;
 	}
+	
+	public Circle[] getEye() {
+		return eye;
+	}
+
+	public void setEye(Circle[] eye) {
+		this.eye = eye;
+	}
+
+	public double getScaleFactor() {
+		return scaleFactor;
+	}
+
+	public void setScaleFactor(double scaleFactor) {
+		this.scaleFactor = scaleFactor;
+	}
+
+	public double getRealScaleFactor() {
+		return realScaleFactor;
+	}
+
+	public void setRealScaleFactor(double realScaleFactor) {
+		this.realScaleFactor = realScaleFactor;
+	}
+
+
 
 	private static Logger log = Logger.getLogger(Class.class.getName());
 
 	public BufferedImage changeEyeColor() {
 		// Scale the original image for processing
 		scaleFactor = ImageUtil.getScaleFactor(300, image);
+		realScaleFactor = ImageUtil.getScaleFactor(300, image);
 		scaledImage = ImageUtil.scaleImage(image, scaleFactor);
 
 		// detect the circles
-		List<Circle> circleList = CircleDetector.getEyeCandidates(image);
+		List<Circle> circleList = CircleDetector.getEyeCandidates(scaledImage);
 
 		// no circles detected, end processing
 		if (circleList.size() == 0) {
@@ -65,7 +93,7 @@ public abstract class ColorFilter implements EyeFilter {
 			eyeImage = createEyeMask();
 		}
 		// mix the original image and the masks
-		return ImageUtil.combineImages(image, eyeImage);
+		return  eyeImage;
 
 	}
 

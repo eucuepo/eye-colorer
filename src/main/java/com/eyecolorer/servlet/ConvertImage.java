@@ -32,7 +32,8 @@ public class ConvertImage extends HttpServlet {
 	private static final long serialVersionUID = -8414206228109706371L;
 	private static Logger log = Logger.getLogger(ConvertImage.class.getName());
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		// get the parameters from the request
 		String firstColorValue = request.getParameter("color"); // Retrieves
@@ -59,10 +60,12 @@ public class ConvertImage extends HttpServlet {
 			response.setContentType("image/jpg");
 			BufferedImage bi = ImageIO.read(file);
 			EyeDetector eyeDetector = new EyeDetector();
-			bi = eyeDetector.getEyesChange(bi, firstColor, secondColor);
+			eyeDetector.setFirstColor(firstColor);
+			bi = eyeDetector.getEyesChange(bi);
 
 			// resize to received width
-			BufferedImage toSave = ImageUtil.scaleImage(bi, ImageUtil.getScaleFactor(width, bi));
+			BufferedImage toSave = ImageUtil.scaleImage(bi,
+					ImageUtil.getScaleFactor(width, bi));
 
 			// convert to JPG
 			toSave = ImageUtil.convertToJpg(toSave);
