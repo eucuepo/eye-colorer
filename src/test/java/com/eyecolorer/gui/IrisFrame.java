@@ -102,8 +102,8 @@ public class IrisFrame extends javax.swing.JFrame {
 		f = new File(file);
 		try {
 			img = ImageIO.read(f);
-			OneColorFilter eyeColorer = new OneColorFilter();
-			img = eyeColorer.changeEyeColor(new Color(255, 0, 0), new Color(0, 255, 0), img);
+			OneColorFilter eyeColorer = new OneColorFilter(new Color(255, 0, 0),img);
+			img = eyeColorer.changeEyeColor();
 			dp.setBi(img);
 
 			// fill image
