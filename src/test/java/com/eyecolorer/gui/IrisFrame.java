@@ -50,8 +50,7 @@ public class IrisFrame extends javax.swing.JFrame {
 		});
 
 		getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
-		jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2,
-				javax.swing.BoxLayout.X_AXIS));
+		jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.X_AXIS));
 
 		jPanel2.setPreferredSize(new java.awt.Dimension(460, 300));
 		jButton1.setText("Select image");
@@ -104,7 +103,7 @@ public class IrisFrame extends javax.swing.JFrame {
 		try {
 			img = ImageIO.read(f);
 			EyeColorer eyeColorer = new EyeColorer();
-			img = eyeColorer.changeEyeColor(new Color(255, 0, 0), img);
+			img = eyeColorer.changeEyeColor(new Color(255, 0, 0), new Color(0, 255, 0), img);
 			dp.setBi(img);
 
 			// fill image

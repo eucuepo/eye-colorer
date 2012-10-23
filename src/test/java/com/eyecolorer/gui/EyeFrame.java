@@ -65,8 +65,7 @@ public class EyeFrame extends javax.swing.JFrame {
 		});
 
 		getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
-		jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2,
-				javax.swing.BoxLayout.X_AXIS));
+		jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.X_AXIS));
 
 		jPanel2.setPreferredSize(new java.awt.Dimension(460, 300));
 		jButton1.setText("Select image");
@@ -113,8 +112,7 @@ public class EyeFrame extends javax.swing.JFrame {
 			originalImage = ImageIO.read(f);
 
 			EyeDetector eyeDetector = new EyeDetector();
-			originalImage = eyeDetector.getEyesChange(originalImage, new Color(
-					0, 0, 255, 80));
+			originalImage = eyeDetector.getEyesChange(originalImage, new Color(0, 0, 255, 80), new Color(0, 255, 0, 80));
 
 			ImageViewer d = new ImageViewer(originalImage);
 			d.setRects(eyeDetector.getEyesList());
@@ -154,8 +152,7 @@ public class EyeFrame extends javax.swing.JFrame {
 			double scale = Math.min(scale_x, scale_y);
 			int x_img = (dim.width - (int) (img_width * scale)) / 2;
 			int y_img = (dim.height - (int) (img_height * scale)) / 2;
-			g1.drawImage(img, x_img, y_img, (int) (img_width * scale),
-					(int) (img_height * scale), null);
+			g1.drawImage(img, x_img, y_img, (int) (img_width * scale), (int) (img_height * scale), null);
 			if (res == null)
 				return;
 

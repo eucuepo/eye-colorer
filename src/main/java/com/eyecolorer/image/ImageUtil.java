@@ -25,6 +25,31 @@ public class ImageUtil {
 	private static Logger log = Logger.getLogger(ImageUtil.class.getName());
 
 	/**
+	 * Creates an "Eye" mask for an image with the parameters passed. This is a
+	 * convenience method for painting just one color
+	 * 
+	 * @param imageWidth
+	 *            Width of the original image in pixels
+	 * @param imageHeight
+	 *            Height of the original image in pixels
+	 * @param innerRadius
+	 *            Radius for the pupil in pixels
+	 * @param outerRadius
+	 *            Radius for the iris in pixels
+	 * @param posX
+	 *            X coordinate of the eye
+	 * @param posY
+	 *            Y coordinate of the eye
+	 * @param eyeColor
+	 *            the RGB color of the eye
+	 * 
+	 * @return A buffered image containing the mask
+	 */
+	public static BufferedImage createEyeMask(int imageWidth, int imageHeight, int innerRadius, int outerRadius, int posX, int posY, int pupilPosX, int pupilPosY, Color eyeColor) {
+		return createEyeMask(imageWidth, imageHeight, innerRadius, outerRadius, posX, posY, pupilPosX, pupilPosY, eyeColor, eyeColor);
+	}
+
+	/**
 	 * Creates an "Eye" mask for an image with the parameters passed
 	 * 
 	 * @param imageWidth
@@ -40,9 +65,13 @@ public class ImageUtil {
 	 * @param posY
 	 *            Y coordinate of the eye
 	 * @param eyeColor
+	 *            the RGB color of the eye
+	 * 
+	 * @param secondEyeColor
+	 *            a secondary RGB color of the eye
 	 * @return A buffered image containing the mask
 	 */
-	public static BufferedImage createEyeMask(int imageWidth, int imageHeight, int innerRadius, int outerRadius, int posX, int posY, int pupilPosX, int pupilPosY, Color eyeColor) {
+	public static BufferedImage createEyeMask(int imageWidth, int imageHeight, int innerRadius, int outerRadius, int posX, int posY, int pupilPosX, int pupilPosY, Color eyeColor, Color secondEyeColor) {
 		// get the eye shape
 		Shape eye = generateEye(posX, posY, pupilPosX, pupilPosY, innerRadius, outerRadius);
 		BufferedImage mask = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
@@ -52,13 +81,11 @@ public class ImageUtil {
 		// Set the eye color
 		// Create and set a RadialGradient centered on the eye to outside
 		Color[] colors = { new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 10), new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 60),
-				new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 60), new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 0) };
+				new Color(secondEyeColor.getRed(), secondEyeColor.getGreen(), secondEyeColor.getBlue(), 60),
+				new Color(secondEyeColor.getRed(), secondEyeColor.getGreen(), secondEyeColor.getBlue(), 10) };
 		Point2D center = new Point2D.Float(pupilPosX + (innerRadius / 2), pupilPosY + (innerRadius / 2));
 		float[] dist = { .15f, .25f, .8f, .9f };
 		RadialGradientPaint radialPaint = new RadialGradientPaint(center, outerRadius, dist, colors);
-		// g2d.setPaint(paint);
-		// Color paint = new Color(eyeColor.getRed(), eyeColor.getGreen(),
-		// eyeColor.getBlue(), 60);
 		g.setPaint(radialPaint);
 
 		// paint the eye!

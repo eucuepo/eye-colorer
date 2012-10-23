@@ -54,9 +54,9 @@ public class UploadImage extends HttpServlet {
 			BufferedImage bi = ImageIO.read(file);
 			EyeDetector eyeDetector = new EyeDetector();
 			if (multiface != null && multiface.equals("true")) {
-				bi = eyeDetector.getEyesChangeMultiFace(bi, eyeColor);
+				bi = eyeDetector.getEyesChangeMultiFace(bi, eyeColor, eyeColor);
 			} else {
-				bi = eyeDetector.getEyesChange(bi, eyeColor);
+				bi = eyeDetector.getEyesChange(bi, eyeColor, eyeColor);
 			}
 			// resize to width 800
 			BufferedImage toSave = ImageUtil.scaleImage(bi, ImageUtil.getScaleFactor(800, bi));
@@ -75,7 +75,7 @@ public class UploadImage extends HttpServlet {
 			out.close();
 
 		} catch (Exception e) {
-			log.debug("Error during eye coloring"+e.getMessage());
+			log.debug("Error during eye coloring" + e.getMessage());
 		}
 	}
 	// }

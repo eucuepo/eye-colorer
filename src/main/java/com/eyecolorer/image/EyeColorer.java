@@ -19,7 +19,7 @@ public class EyeColorer {
 	 *            The image of the eye
 	 * @return
 	 */
-	public BufferedImage changeEyeColor(Color eyeColor, BufferedImage toChange) {
+	public BufferedImage changeEyeColor(Color eyeColor, Color secondEyeColor, BufferedImage toChange) {
 		// Scale the original image for processing
 		double scaleFactor = ImageUtil.getScaleFactor(300, toChange);
 		BufferedImage bi = ImageUtil.scaleImage(toChange, scaleFactor);
@@ -61,7 +61,7 @@ public class EyeColorer {
 			log.debug("iris: " + eye[1].toString());
 			eyeImage = ImageUtil.createEyeMask((int) (bi.getWidth() / scaleFactor), (int) (bi.getHeight() / scaleFactor), (int) (eye[0].getRadius() * 2 / scaleFactor),
 					(int) (eye[1].getRadius() * 2 / scaleFactor), (int) ((eye[1].getX() - eye[1].getRadius()) / scaleFactor), (int) ((eye[1].getY() - eye[1].getRadius()) / scaleFactor),
-					(int) ((eye[0].getX() - eye[0].getRadius()) / scaleFactor), (int) ((eye[0].getY() - eye[0].getRadius()) / scaleFactor), eyeColor);
+					(int) ((eye[0].getX() - eye[0].getRadius()) / scaleFactor), (int) ((eye[0].getY() - eye[0].getRadius()) / scaleFactor), eyeColor, secondEyeColor);
 		}
 		// mix the original image and the masks
 		return ImageUtil.combineImages(toChange, eyeImage);

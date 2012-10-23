@@ -20,7 +20,8 @@ import com.eyecolorer.image.EyeDetector;
 import com.eyecolorer.image.ImageUtil;
 
 /**
- * Webservice to change eye color of images and return the generated image to the caller
+ * Webservice to change eye color of images and return the generated image to
+ * the caller
  * 
  * @author ecuevas
  * 
@@ -34,9 +35,15 @@ public class ConvertImage extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// get the parameters from the request
-		String color = request.getParameter("color"); // Retrieves <input
-														// type="text"
-														// name="color">
+		String firstColorValue = request.getParameter("color"); // Retrieves
+																// <input
+		// type="text"
+		// name="color">
+
+		String secondColorValue = request.getParameter("secondColor"); // Retrieves
+																		// <input
+		// type="text"
+		// name="color">
 		Part filePart = request.getPart("image"); // Retrieves <input
 													// type="file"
 													// name="file">
@@ -45,16 +52,14 @@ public class ConvertImage extends HttpServlet {
 
 		InputStream file = filePart.getInputStream();
 
-		Color eyeColor = new Color(Integer.parseInt(color, 16));
-
+		Color firstColor = new Color(Integer.parseInt(firstColorValue, 16));
+		Color secondColor = new Color(Integer.parseInt(secondColorValue, 16));
 		try {
 			OutputStream outputStream = response.getOutputStream();
-
 			response.setContentType("image/jpg");
-
 			BufferedImage bi = ImageIO.read(file);
 			EyeDetector eyeDetector = new EyeDetector();
-			bi = eyeDetector.getEyesChange(bi, eyeColor);
+			bi = eyeDetector.getEyesChange(bi, firstColor, secondColor);
 
 			// resize to received width
 			BufferedImage toSave = ImageUtil.scaleImage(bi, ImageUtil.getScaleFactor(width, bi));
@@ -65,7 +70,6 @@ public class ConvertImage extends HttpServlet {
 			ImageIO.write(toSave, "JPG", outputStream);
 
 			outputStream.close();
-
 		} catch (Exception e) {
 			log.debug("Error during eye coloring");
 		}
