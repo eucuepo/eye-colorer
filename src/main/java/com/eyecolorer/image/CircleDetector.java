@@ -5,11 +5,9 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.Vector;
 
 import jip.JIPImage;
 import jip.JIPToolkit;
-import jiputil.Circunferencia;
 
 import org.apache.log4j.Logger;
 
