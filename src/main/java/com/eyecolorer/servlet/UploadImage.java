@@ -39,21 +39,13 @@ public class UploadImage extends HttpServlet {
 			throws ServletException, IOException {
 
 		// get the parameters from the request
-		String firstColorValue = request.getParameter("firstColor"); // Retrieves
-		// <input
-		// type="text"
-		// name="color">
-
-		String secondColorValue = request.getParameter("secondColor"); // Retrieves
-																		// <input
-		// type="text"
-		// name="color">
-		Part filePart = request.getPart("image"); // Retrieves <input
-													// type="file"
-													// name="file">
+		String firstColorValue = request.getParameter("firstColor");
+		String secondColorValue = request.getParameter("secondColor");
+		Part filePart = request.getPart("image");
 		String multiface = request.getParameter("multiface");
 		String enableSecondColor = request.getParameter("secondColorEnabled");
 		String hipsterize = request.getParameter("hipsterize");
+		String texture = request.getParameter("texture");
 
 		InputStream file = filePart.getInputStream();
 
@@ -68,10 +60,12 @@ public class UploadImage extends HttpServlet {
 			BufferedImage bi = ImageIO.read(file);
 			EyeDetector eyeDetector = new EyeDetector();
 			eyeDetector.setFirstColor(firstColor);
+
+			eyeDetector.setTexture(texture);
 			if (enableSecondColor.equals("true")) {
 				eyeDetector.setSecondColor(secondColor);
 			}
-			if (hipsterize.equals("true")){
+			if (hipsterize.equals("true")) {
 				eyeDetector.setHipsterize(true);
 			}
 			if (multiface != null && multiface.equals("true")) {

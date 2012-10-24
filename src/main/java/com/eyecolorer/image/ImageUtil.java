@@ -13,11 +13,7 @@ import java.awt.TexturePaint;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
@@ -52,47 +48,35 @@ public class ImageUtil {
 	 * 
 	 * @return A buffered image containing the mask
 	 */
-	public static BufferedImage createEyeMask(int imageWidth, int imageHeight, int innerRadius, int outerRadius, int posX, int posY, int pupilPosX, int pupilPosY, Color eyeColor, double scaleFactor) {
-		return createEyeMask(imageWidth, imageHeight, innerRadius, outerRadius, posX, posY, pupilPosX, pupilPosY, eyeColor, eyeColor, scaleFactor);
-	}
-
-	/**
-	 * Creates an "Eye" mask for an image with the parameters passed
-	 * 
-	 * @param imageWidth
-	 *            Width of the original image in pixels
-	 * @param imageHeight
-	 *            Height of the original image in pixels
-	 * @param innerRadius
-	 *            Radius for the pupil in pixels
-	 * @param outerRadius
-	 *            Radius for the iris in pixels
-	 * @param posX
-	 *            X coordinate of the eye
-	 * @param posY
-	 *            Y coordinate of the eye
-	 * @param eyeColor
-	 *            the RGB color of the eye
-	 * 
-	 * @param secondEyeColor
-	 *            a secondary RGB color of the eye
-	 * @return A buffered image containing the mask
-	 */
-	public static BufferedImage createEyeMask(int imageWidth, int imageHeight, int innerRadius, int outerRadius, int posX, int posY, int pupilPosX, int pupilPosY, Color eyeColor,
-			Color secondEyeColor, double scaleFactor) {
+	public static BufferedImage createEyeMask(int imageWidth, int imageHeight,
+			int innerRadius, int outerRadius, int posX, int posY,
+			int pupilPosX, int pupilPosY, Color eyeColor, double scaleFactor) {
 		// get the eye shape
-		Shape eye = generateEye(posX, posY, pupilPosX, pupilPosY, innerRadius, outerRadius);
-		BufferedImage mask = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
+		Shape eye = generateEye(posX, posY, pupilPosX, pupilPosY, innerRadius,
+				outerRadius);
+		BufferedImage mask = new BufferedImage(imageWidth, imageHeight,
+				BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = mask.createGraphics();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
 		log.debug("Paint radius: " + (outerRadius - innerRadius));
 		// Set the eye color
 		// Create and set a RadialGradient centered on the eye to outside
-		Color[] colors = { new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 10), new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 60),
-				new Color(secondEyeColor.getRed(), secondEyeColor.getGreen(), secondEyeColor.getBlue(), 60), new Color(secondEyeColor.getRed(), secondEyeColor.getGreen(), secondEyeColor.getBlue(), 5) };
-		Point2D center = new Point2D.Float(pupilPosX + (innerRadius / 2), pupilPosY + (innerRadius / 2));
-		float[] dist = { .0f, .5f, .7f, 1f };
-		RadialGradientPaint radialPaint = new RadialGradientPaint(center, (int) (outerRadius * scaleFactor), dist, colors, CycleMethod.NO_CYCLE);
+		Color[] colors = {
+				new Color(eyeColor.getRed(), eyeColor.getGreen(),
+						eyeColor.getBlue(), 10),
+				new Color(eyeColor.getRed(), eyeColor.getGreen(),
+						eyeColor.getBlue(), 60),
+				new Color(eyeColor.getRed(), eyeColor.getGreen(),
+						eyeColor.getBlue(), 60),
+				new Color(eyeColor.getRed(), eyeColor.getGreen(),
+						eyeColor.getBlue(), 30) };
+		Point2D center = new Point2D.Float(pupilPosX + (innerRadius / 2),
+				pupilPosY + (innerRadius / 2));
+		float[] dist = { .0f, .6f, .95f, 1f };
+		RadialGradientPaint radialPaint = new RadialGradientPaint(center,
+				(int) (outerRadius * scaleFactor), dist, colors,
+				CycleMethod.NO_CYCLE);
 		g.setPaint(radialPaint);
 
 		// paint the eye!
@@ -125,36 +109,93 @@ public class ImageUtil {
 	 *            a secondary RGB color of the eye
 	 * @return A buffered image containing the mask
 	 */
-	public static BufferedImage createEyeTextureMask(int imageWidth, int imageHeight, int innerRadius, int outerRadius, int posX, int posY, int pupilPosX, int pupilPosY, Color eyeColor,
-			Color secondEyeColor, double scaleFactor) {
+	public static BufferedImage createEyeMask(int imageWidth, int imageHeight,
+			int innerRadius, int outerRadius, int posX, int posY,
+			int pupilPosX, int pupilPosY, Color eyeColor, Color secondEyeColor,
+			double scaleFactor) {
 		// get the eye shape
-		Shape eye = generateEye(posX, posY, pupilPosX, pupilPosY, innerRadius, outerRadius);
-		BufferedImage mask = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
-		try {
-			BufferedImage glasses = ImageIO.read(ImageUtil.class.getResourceAsStream("hipster.png"));
+		Shape eye = generateEye(posX, posY, pupilPosX, pupilPosY, innerRadius,
+				outerRadius);
+		BufferedImage mask = new BufferedImage(imageWidth, imageHeight,
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = mask.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		log.debug("Paint radius: " + (outerRadius - innerRadius));
+		// Set the eye color
+		// Create and set a RadialGradient centered on the eye to outside
+		Color[] colors = {
+				new Color(eyeColor.getRed(), eyeColor.getGreen(),
+						eyeColor.getBlue(), 10),
+				new Color(eyeColor.getRed(), eyeColor.getGreen(),
+						eyeColor.getBlue(), 60),
+				new Color(secondEyeColor.getRed(), secondEyeColor.getGreen(),
+						secondEyeColor.getBlue(), 60),
+				new Color(secondEyeColor.getRed(), secondEyeColor.getGreen(),
+						secondEyeColor.getBlue(), 30) };
+		Point2D center = new Point2D.Float(pupilPosX + (innerRadius / 2),
+				pupilPosY + (innerRadius / 2));
+		float[] dist = { .0f, .4f, .6f, 1f };
+		RadialGradientPaint radialPaint = new RadialGradientPaint(center,
+				(int) (outerRadius * scaleFactor), dist, colors,
+				CycleMethod.NO_CYCLE);
+		g.setPaint(radialPaint);
 
-			Graphics2D g = mask.createGraphics();
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			log.debug("Paint radius: " + (outerRadius - innerRadius));
-			// Set the eye color
-			// Create and set a RadialGradient centered on the eye to outside
-			Color[] colors = { new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 10), new Color(eyeColor.getRed(), eyeColor.getGreen(), eyeColor.getBlue(), 60),
-					new Color(secondEyeColor.getRed(), secondEyeColor.getGreen(), secondEyeColor.getBlue(), 60),
-					new Color(secondEyeColor.getRed(), secondEyeColor.getGreen(), secondEyeColor.getBlue(), 5) };
-			Point2D center = new Point2D.Float(pupilPosX + (innerRadius / 2), pupilPosY + (innerRadius / 2));
-			float[] dist = { .0f, .5f, .7f, 1f };
-			RadialGradientPaint radialPaint = new RadialGradientPaint(center, (int) (outerRadius * scaleFactor), dist, colors, CycleMethod.NO_CYCLE);
-			TexturePaint texturePaint = new TexturePaint(glasses, new Rectangle(0, 0));
-			g.setPaint(radialPaint);
+		// paint the eye!
+		g.fill(eye);
+		g.dispose();
+		mask.flush();
 
-			// paint the eye!
-			g.fill(eye);
-			g.dispose();
-			mask.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return mask;
+	}
+
+	/**
+	 * Creates an "Eye" mask for an image with the parameters passed
+	 * 
+	 * @param imageWidth
+	 *            Width of the original image in pixels
+	 * @param imageHeight
+	 *            Height of the original image in pixels
+	 * @param innerRadius
+	 *            Radius for the pupil in pixels
+	 * @param outerRadius
+	 *            Radius for the iris in pixels
+	 * @param posX
+	 *            X coordinate of the eye
+	 * @param posY
+	 *            Y coordinate of the eye
+	 * @param eyeColor
+	 *            the RGB color of the eye
+	 * 
+	 * @param secondEyeColor
+	 *            a secondary RGB color of the eye
+	 * @return A buffered image containing the mask
+	 */
+	public static BufferedImage createEyeTextureMask(int imageWidth,
+			int imageHeight, int innerRadius, int outerRadius, int posX,
+			int posY, int pupilPosX, int pupilPosY, double scaleFactor,
+			BufferedImage texture) {
+
+		// get the eye shape
+		Shape eye = generateEye(posX, posY, pupilPosX, pupilPosY, innerRadius,
+				outerRadius);
+		BufferedImage mask = new BufferedImage(imageWidth, imageHeight,
+				BufferedImage.TYPE_INT_ARGB);
+
+		Graphics2D g = mask.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+
+		TexturePaint texturePaint = new TexturePaint(texture, new Rectangle(0,
+				0, 300, 300));
+
+		g.setPaint(texturePaint);
+
+		// paint the eye!
+		g.fill(eye);
+		g.dispose();
+		mask.flush();
+
 		return mask;
 	}
 
@@ -171,12 +212,15 @@ public class ImageUtil {
 	 *            outer radius of the circle
 	 * @return
 	 */
-	private static Shape generateEye(double x, double y, double pupilPosX, double pupilPosY, double innerRadius, double outerRadius) {
+	private static Shape generateEye(double x, double y, double pupilPosX,
+			double pupilPosY, double innerRadius, double outerRadius) {
 		// create iris circle
-		Area iris = new Area(new Ellipse2D.Double(x, y, outerRadius, outerRadius));
+		Area iris = new Area(new Ellipse2D.Double(x, y, outerRadius,
+				outerRadius));
 		// double innerOffset = (outerRadius - innerRadius) / 2;
 		// create pupil circle
-		Area pupil = new Area(new Ellipse2D.Double(pupilPosX, pupilPosY, innerRadius, innerRadius));
+		Area pupil = new Area(new Ellipse2D.Double(pupilPosX, pupilPosY,
+				innerRadius, innerRadius));
 		// substract pupil
 		iris.subtract(pupil);
 		return iris;
@@ -192,12 +236,14 @@ public class ImageUtil {
 	 *            top image
 	 * @return
 	 */
-	public static BufferedImage combineImages(BufferedImage image, BufferedImage overlay) {
+	public static BufferedImage combineImages(BufferedImage image,
+			BufferedImage overlay) {
 
 		// create the new image, canvas size is the max. of both image sizes
 		int w = Math.max(image.getWidth(), overlay.getWidth());
 		int h = Math.max(image.getHeight(), overlay.getHeight());
-		BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage combined = new BufferedImage(w, h,
+				BufferedImage.TYPE_INT_ARGB);
 
 		// paint both images, preserving the alpha channels
 		Graphics g = combined.getGraphics();
@@ -218,16 +264,19 @@ public class ImageUtil {
 	 * @param overlayY
 	 * @return
 	 */
-	public static BufferedImage combineImages(BufferedImage image, BufferedImage overlay, int overlayX, int overlayY) {
+	public static BufferedImage combineImages(BufferedImage image,
+			BufferedImage overlay, int overlayX, int overlayY) {
 
-		BufferedImage combined = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		BufferedImage combined = new BufferedImage(image.getWidth(),
+				image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
 		// paint both images, preserving the alpha channels
 		Graphics g = combined.getGraphics();
 		g.drawImage(image, 0, 0, null);
 		g.drawImage(overlay, overlayX, overlayY, null);
 
-		log.debug("Combining images: overlayX" + overlayX + " overlayY:" + overlayY);
+		log.debug("Combining images: overlayX" + overlayX + " overlayY:"
+				+ overlayY);
 		// Save as new image
 		return combined;
 	}
@@ -247,7 +296,8 @@ public class ImageUtil {
 	 *            The height of the rectangle
 	 * @return
 	 */
-	public static BufferedImage cropImage(BufferedImage image, int topX, int topY, int width, int height) {
+	public static BufferedImage cropImage(BufferedImage image, int topX,
+			int topY, int width, int height) {
 		// create cropping rectangle
 		BufferedImage dest = image.getSubimage(topX, topY, width, height);
 		// return cropped image
@@ -281,9 +331,16 @@ public class ImageUtil {
 		double oldHeight = img.getHeight();
 		double oldWidth = img.getWidth();
 		log.debug("Scale factor: " + scaleFactor);
-		log.debug("Scaling image: original size:" + img.getWidth() + "x" + img.getHeight() + ". New size: " + (int) (oldWidth * scaleFactor) + "x" + (int) (oldHeight * scaleFactor));
-		Image scaledImage = img.getScaledInstance((int) (oldWidth * scaleFactor), (int) (oldHeight * scaleFactor), Image.SCALE_FAST);
-		BufferedImage imageBuff = new BufferedImage((int) (oldWidth * scaleFactor), (int) (oldHeight * scaleFactor), img.getType());
+		log.debug("Scaling image: original size:" + img.getWidth() + "x"
+				+ img.getHeight() + ". New size: "
+				+ (int) (oldWidth * scaleFactor) + "x"
+				+ (int) (oldHeight * scaleFactor));
+		Image scaledImage = img.getScaledInstance(
+				(int) (oldWidth * scaleFactor),
+				(int) (oldHeight * scaleFactor), Image.SCALE_FAST);
+		BufferedImage imageBuff = new BufferedImage(
+				(int) (oldWidth * scaleFactor),
+				(int) (oldHeight * scaleFactor), img.getType());
 		Graphics g = imageBuff.createGraphics();
 		g.drawImage(scaledImage, 0, 0, new Color(0, 0, 0, 0), null);
 		g.dispose();
@@ -298,7 +355,8 @@ public class ImageUtil {
 	 * @param mask
 	 * @return
 	 */
-	public static BufferedImage applyGrayscaleMaskToAlpha(BufferedImage image, BufferedImage mask) {
+	public static BufferedImage applyGrayscaleMaskToAlpha(BufferedImage image,
+			BufferedImage mask) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 
@@ -327,7 +385,8 @@ public class ImageUtil {
 	public static BufferedImage convertToJpg(BufferedImage image) {
 		int w = image.getWidth();
 		int h = image.getHeight();
-		BufferedImage image2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+		BufferedImage image2 = new BufferedImage(w, h,
+				BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = image2.createGraphics();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, w, h);

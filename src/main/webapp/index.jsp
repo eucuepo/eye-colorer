@@ -16,6 +16,7 @@
 	var secondColorEnabled = false;
 	var hipsterize = false;
 	var ajaxUpload;
+	var textureValue = '';
 
 	$(document).ready(function() {
 
@@ -29,7 +30,8 @@
 				secondColor : 'FFFFFF',
 				secondColorEnabled : false,
 				multiface : false,
-				hipsterize : false
+				hipsterize : false,
+				texture : ''
 			},
 			autoSubmit : false,
 			onSubmit : function(file, extension) {
@@ -55,7 +57,7 @@
 				: false;
 		setData();
 	}
-	
+
 	function changeHipsterize() {
 		hipsterize = $('#hipsterize').attr('checked') ? true : false;
 		setData();
@@ -77,8 +79,10 @@
 			secondColor : secondColor,
 			secondColorEnabled : secondColorEnabled,
 			multiface : multifaceChecked,
-			hipsterize : hipsterize
+			hipsterize : hipsterize,
+			texture : $('#texture').val()
 		});
+
 	}
 </script>
 </head>
@@ -109,20 +113,38 @@
 						enctype="multipart/form-data" id="newHotnessForm"
 						onsubmit="return false;">
 						<input type="file" size="20" id="imageUpload" class=" "
-							name="image" /> <input id="firstColor" class="color"
-							name="firstColor" onchange="changeFirstColor(this.color);" />
-						<!-- <p>Enable multiface</p>
-						<input type="checkbox" name="multiface" id="multiface"
-							onchange="changeMultiface()" />
-						<p>Enable secondary color</p>
-						<input type="checkbox" name="enableSecondColor"
-							id="enableSecondColor" onchange="setSecondColorEnabled()" /> 
-							<input id="secondColor" class="color" name="secondColor"
-							onchange="changeSecondColor(this.color);" />
-						<input type="checkbox" name="hipsterize"
-							id="hipsterize" onchange="changeHipsterize()" /> --> 
-						<button type="submit" onclick="ajaxUpload.submit();"
-							class="button">Save</button>
+							name="image" />
+						<div>
+							<span>Choose a color</span> <input id="firstColor" class="color"
+								name="firstColor" onchange="changeFirstColor(this.color);" />
+						</div>
+						<div>
+							<span>Enable secondary color</span> <input type="checkbox"
+								name="enableSecondColor" id="enableSecondColor"
+								onchange="setSecondColorEnabled()" /><span>Choose a
+								secondary color:</span> <input id="secondColor" class="color"
+								name="secondColor" onchange="changeSecondColor(this.color);" />
+						</div>
+						<div>
+							<span>Enable multiface detection:</span> <input type="checkbox"
+								name="multiface" id="multiface" onchange="changeMultiface()" />
+						</div>
+						<div>
+							<span>Hipsterize me!</span> <input type="checkbox"
+								name="hipsterize" id="hipsterize" onchange="changeHipsterize()" />
+						</div>
+						<div>
+							<span>Choose an awesome texture!</span> <select id=texture
+								name="texture" onchange="setData()">
+								<option value=""></option>
+								<option value="fire">fire</option>
+								<option value="aqua">aqua</option>
+							</select>
+						</div>
+						<div>
+							<button type="submit" onclick="ajaxUpload.submit();"
+								class="button">Change me!</button>
+						</div>
 						<div class="loader"></div>
 					</form>
 				</div>

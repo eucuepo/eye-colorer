@@ -17,13 +17,15 @@ public class Hipsterizer {
 		// get the glasses
 		try {
 			BufferedImage glasses = ImageIO.read(getClass().getClassLoader().getResourceAsStream("hipster.png"));
+			
 			double distanceBetweenEyes = eyePoints.get(0).distance(eyePoints.get(1));
 			System.out.println("distance between eyes: " + distanceBetweenEyes);
 			int realEyeRadius = (int) ((eyeRadius / (scaleFactor)));
-			double glassesScaleFactor = realEyeRadius / 55d;
+			//double glassesScaleFactor = realEyeRadius / 55d;
+			double glassesScaleFactor = distanceBetweenEyes/330d;
 
 			int xGlasses = (int) (((x / eyeScaleFactor) + (eyeRectangle.x / scaleFactor)) - (realEyeRadius * 2.8d));
-			int yGlasses = (int) (((y / eyeScaleFactor) + (eyeRectangle.y / scaleFactor)) - (realEyeRadius * 2d));
+			int yGlasses = (int) (((y / eyeScaleFactor) + (eyeRectangle.y / scaleFactor)) - (realEyeRadius * 2.3d));
 
 			// 639 * 238
 			// put them in the image
