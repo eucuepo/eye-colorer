@@ -5,6 +5,10 @@ import java.awt.image.BufferedImage;
 
 import com.eyecolorer.image.ImageUtil;
 
+/**
+ *Paints one color in the eye 
+ *
+ */
 public class OneColorFilter extends ColorFilter {
 
 	private Color eyeColor;

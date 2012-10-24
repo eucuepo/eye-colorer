@@ -3,6 +3,7 @@ package com.eyecolorer.image;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -107,10 +108,7 @@ public class EyeDetector {
 		for (Rectangle rectangle : facesList) {
 			// extract all the eyes from the original image using the
 			// generated faces
-			BufferedImage extracted = ImageUtil.cropImage(originalImage,
-					(int) (rectangle.x / faceScaleFactor),
-					(int) (rectangle.y / faceScaleFactor),
-					(int) (rectangle.width / faceScaleFactor),
+			BufferedImage extracted = ImageUtil.cropImage(originalImage, (int) (rectangle.x / faceScaleFactor), (int) (rectangle.y / faceScaleFactor), (int) (rectangle.width / faceScaleFactor),
 					(int) (rectangle.height / faceScaleFactor));
 
 			EyeDetector auxEyeDetector = new EyeDetector();
@@ -120,9 +118,7 @@ public class EyeDetector {
 			if (extracted != null) {
 				// tengo los ojos pintados, combinar con la original
 				log.debug("Extracted face, paint it");
-				originalImage = ImageUtil.combineImages(originalImage,
-						extracted, (int) (rectangle.x / faceScaleFactor),
-						(int) (rectangle.y / faceScaleFactor));
+				originalImage = ImageUtil.combineImages(originalImage, extracted, (int) (rectangle.x / faceScaleFactor), (int) (rectangle.y / faceScaleFactor));
 			}
 		}
 		return originalImage;
@@ -142,9 +138,7 @@ public class EyeDetector {
 		// Speed optimization. If the image is large enough, is safe to crop
 		// the bottom third
 		if (originalImage.getHeight() > 1024) {
-			thumbImage = ImageUtil.cropImage(originalImage, 0, 0,
-					originalImage.getWidth(),
-					(int) (originalImage.getHeight() / 1.5));
+			thumbImage = ImageUtil.cropImage(originalImage, 0, 0, originalImage.getWidth(), (int) (originalImage.getHeight() / 1.5));
 		}
 		this.scaleFactor = ImageUtil.getScaleFactor(800, originalImage);
 		// Scale to optimize for haar cascades
@@ -157,13 +151,12 @@ public class EyeDetector {
 		eyesList = removeOverlappingRectangles(eyesList);
 		log.debug("Eyes after filter: " + eyesList.size());
 		for (Rectangle rectangle : eyesList) {
-			log.debug("Eye detected: height:" + rectangle.height + "width:"
-					+ rectangle.width + " x:" + rectangle.x + " y:"
-					+ rectangle.y);
+			log.debug("Eye detected: height:" + rectangle.height + "width:" + rectangle.width + " x:" + rectangle.x + " y:" + rectangle.y);
 		}
 
 		// this is for the hipsterizer
 		int minX = Integer.MAX_VALUE;
+		List<Point2D> eyePoints = new ArrayList<Point2D>();
 		Point eyePoint = new Point(0, 0);
 		Rectangle leftEye = new Rectangle();
 		double eyeScaleFactor = 0.0;
@@ -173,41 +166,34 @@ public class EyeDetector {
 
 			// extract all the eyes from the original image using the
 			// generated faces
-			BufferedImage extracted = ImageUtil.cropImage(originalImage,
-					(int) (rectangle.x / scaleFactor),
-					(int) (rectangle.y / scaleFactor),
-					(int) (rectangle.width / scaleFactor),
+			BufferedImage extracted = ImageUtil.cropImage(originalImage, (int) (rectangle.x / scaleFactor), (int) (rectangle.y / scaleFactor), (int) (rectangle.width / scaleFactor),
 					(int) (rectangle.height / scaleFactor));
 			ColorFilter colorFilter = null;
 			if (secondColor == null) {
 				colorFilter = new OneColorFilter(firstColor, extracted);
 			} else {
-				colorFilter = new TwoColorFilter(firstColor, secondColor,
-						extracted);
+				colorFilter = new TwoColorFilter(firstColor, secondColor, extracted);
 			}
 
 			extracted = colorFilter.changeEyeColor();
 			if (rectangle.getX() < minX) {
 				minX = (int) rectangle.getX();
-				eyePoint = new Point(colorFilter.getEye()[1].getCenterX(),
-						colorFilter.getEye()[1].getCenterY());
+				eyePoint = new Point(colorFilter.getEye()[1].getCenterX(), colorFilter.getEye()[1].getCenterY());
+				eyePoints.add( new Point(colorFilter.getEye()[1].getCenterX(), colorFilter.getEye()[1].getCenterY()));
 				leftEye = rectangle;
-				eyeScaleFactor =colorFilter.getRealScaleFactor();
+				eyeScaleFactor = colorFilter.getRealScaleFactor();
 				eyeRadius = colorFilter.getEye()[1].getRadius();
 			}
 			if (extracted != null) {
 				// tengo el ojo pintado, combinar con la original
 				log.debug("Extracted eye, paint it");
-				originalImage = ImageUtil.combineImages(originalImage,
-						extracted, (int) (rectangle.x / scaleFactor),
-						(int) (rectangle.y / scaleFactor));
+				originalImage = ImageUtil.combineImages(originalImage, extracted, (int) (rectangle.x / scaleFactor), (int) (rectangle.y / scaleFactor));
 			}
 		}
 		if (isHipsterize()) {
 			// take the eye in the left
 			Hipsterizer hipsterizer = new Hipsterizer();
-			originalImage = hipsterizer.hipsterMe(originalImage, eyePoint.x,
-					eyePoint.y, leftEye.width, leftEye.width, scaleFactor, eyeScaleFactor,eyeRadius,leftEye);
+			originalImage = hipsterizer.hipsterMe(originalImage, eyePoint.x, eyePoint.y, scaleFactor, eyeScaleFactor, eyeRadius, leftEye, eyePoints);
 		}
 
 		return originalImage;
@@ -226,8 +212,7 @@ public class EyeDetector {
 		for (Rectangle innerRectangle : rectList) {
 			boolean alone = true;
 			for (Rectangle rectangle : rectList) {
-				if (!innerRectangle.equals(rectangle)
-						&& innerRectangle.intersects(rectangle)) {
+				if (!innerRectangle.equals(rectangle) && innerRectangle.intersects(rectangle)) {
 					alone = false;
 					if (innerRectangle.width > rectangle.width) {
 						rectangleClearSet.add(innerRectangle);
@@ -253,11 +238,9 @@ public class EyeDetector {
 	private List<Rectangle> detectEyes(BufferedImage image) {
 
 		Detector detector;
-		detector = new Detector(getClass().getClassLoader()
-				.getResourceAsStream("haarcascade_eye.xml"));
+		detector = new Detector(getClass().getClassLoader().getResourceAsStream("haarcascade_eye.xml"));
 
-		List<Rectangle> res = detector.getFaces(image, 1.2f, 1.1f, .05f, 2,
-				true);
+		List<Rectangle> res = detector.getFaces(image, 1.2f, 1.1f, .05f, 2, true);
 
 		log.debug(res.size() + " faces found!");
 		return res;
@@ -272,11 +255,9 @@ public class EyeDetector {
 	private List<Rectangle> detectFaces(BufferedImage image) {
 
 		Detector detector;
-		detector = new Detector(getClass().getClassLoader()
-				.getResourceAsStream("haarcascade_frontalface_default.xml"));
+		detector = new Detector(getClass().getClassLoader().getResourceAsStream("haarcascade_frontalface_default.xml"));
 
-		List<Rectangle> res = detector.getFaces(image, 1.2f, 1.1f, .05f, 2,
-				true);
+		List<Rectangle> res = detector.getFaces(image, 1.2f, 1.1f, .05f, 2, true);
 
 		log.debug(res.size() + " faces found!");
 		return res;

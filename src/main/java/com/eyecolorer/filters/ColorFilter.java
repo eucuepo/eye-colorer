@@ -9,6 +9,10 @@ import com.eyecolorer.image.Circle;
 import com.eyecolorer.image.CircleDetector;
 import com.eyecolorer.image.ImageUtil;
 
+/**
+ * This is an abstract class to define a filter for an eye
+ *
+ */
 public abstract class ColorFilter implements EyeFilter {
 
 	protected BufferedImage image;

@@ -5,6 +5,10 @@ import java.awt.image.BufferedImage;
 
 import com.eyecolorer.image.ImageUtil;
 
+/**
+ * Filter that paints an eye with two colors 
+ *
+ */
 public class TwoColorFilter extends ColorFilter {
 
 	private Color firstColor;
